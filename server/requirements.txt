@@ -1,0 +1,13 @@
+Flask
+flask-cors
+flask-jwt-extended
+pymongo
+python-dotenv
+bcrypt
+numpy
+pandas
+scikit-learn
+sentence-transformers
+spacy
+networkx
+requests
