@@ -12,10 +12,21 @@ class UserService:
             return None
 
         return {
+            "id": str(user["_id"]),
             "name": user.get("name"),
             "email": user.get("email"),
-            "profile": user.get("profile", {}),
-            "skills": user.get("skills", []),
+            "role": user.get("role", "learner"),
+
+            "profile": user.get(
+                "profile",
+                {}
+            ),
+
+            "skills": user.get(
+                "skills",
+                []
+            ),
+
             "completedCourses": user.get(
                 "completedCourses",
                 []
@@ -23,7 +34,10 @@ class UserService:
         }
 
     @staticmethod
-    def update_profile(user_id, profile_data):
+    def update_profile(
+        user_id,
+        profile_data
+    ):
 
         success = UserModel.update_profile(
             user_id,
@@ -33,4 +47,6 @@ class UserService:
         if not success:
             return None
 
-        return UserService.get_profile(user_id)
+        return UserService.get_profile(
+            user_id
+        )

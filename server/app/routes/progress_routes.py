@@ -1,40 +1,51 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.config.database import get_db
+from bson import ObjectId
 
-from app.models.progress_model import ProgressModel
-
-
-progress_bp = Blueprint(
-    "progress",
-    __name__
-)
+progress_bp = Blueprint("progress", __name__)
 
 
-@progress_bp.route("/", methods=["GET"])
-def get_progress():
+@progress_bp.route("/start/<course_id>", methods=["POST"])
+@jwt_required()
+def start_course(course_id):
 
-    progress = ProgressModel.get_all()
+    db = get_db()
 
-    return jsonify({
-        "success": True,
-        "count": len(progress),
-        "progress": progress
-    }), 200
+    user_id = get_jwt_identity()
 
+    existing = db.progress.find_one({
+        "user_id": user_id,
+        "course_id": course_id
+    })
 
-@progress_bp.route("/", methods=["POST"])
-def create_progress():
-
-    data = request.get_json() or {}
-
-    if not data.get("courseId"):
+    if existing:
         return jsonify({
-            "success": False,
-            "message": "courseId is required"
-        }), 400
+            "success": True,
+            "message": "Course already started",
+            "progress": {
+                "course_id": course_id,
+                "percentage": existing.get("percentage", 0)
+            }
+        })
 
-    progress = ProgressModel.create(data)
+    progress = {
+        "user_id": user_id,
+        "course_id": course_id,
+        "percentage": 0,
+        "completed_topics": [],
+        "status": "in_progress"
+    }
+
+    result = db.progress.insert_one(progress)
 
     return jsonify({
         "success": True,
-        "progress": progress
+        "message": "Course started",
+        "progress": {
+            "id": str(result.inserted_id),
+            "course_id": course_id,
+            "percentage": 0,
+            "status": "in_progress"
+        }
     }), 201

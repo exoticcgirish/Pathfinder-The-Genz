@@ -11,28 +11,29 @@ const CourseDetails = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    const loadCourse = async () => {
+      try {
+        const response = await getCourseById(id);
+
+        setCourse(response.data?.course || null);
+      } catch (error) {
+        console.error("GET COURSE ERROR:", error);
+
+        setError(
+          error.response?.data?.message ||
+            "Failed to load course."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadCourse();
   }, [id]);
 
-  const loadCourse = async () => {
-    try {
-      const response = await getCourseById(id);
-
-      console.log("COURSE DETAILS:", response.data);
-
-      setCourse(response.data?.data || response.data);
-    } catch (err) {
-      console.error("COURSE DETAILS ERROR:", err);
-
-      setError("Failed to load course.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 p-8">
+      <div className="min-h-screen flex items-center justify-center">
         Loading course...
       </div>
     );
@@ -40,49 +41,123 @@ const CourseDetails = () => {
 
   if (error || !course) {
     return (
-      <div className="min-h-screen bg-slate-50 p-8">
-        <p className="text-red-500">
-          {error || "Course not found."}
-        </p>
+      <div className="min-h-screen bg-slate-50 px-6 py-10">
+        <div className="mx-auto max-w-3xl rounded-2xl bg-white p-8 text-center">
+          <h2 className="text-xl font-bold text-red-600">
+            {error || "Course not found"}
+          </h2>
 
-        <button
-          onClick={() => navigate("/courses")}
-          className="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-white"
-        >
-          Back to Courses
-        </button>
+          <button
+            onClick={() => navigate("/courses")}
+            className="mt-6 rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white"
+          >
+            Back to Courses
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
-      <div className="mx-auto max-w-4xl">
+    <div className="min-h-screen bg-slate-50">
 
-        <button
-          onClick={() => navigate("/courses")}
-          className="mb-6 text-indigo-600"
-        >
-          ← Back to Courses
-        </button>
+      <header className="border-b bg-white">
+        <div className="mx-auto max-w-5xl px-6 py-5">
 
-        <div className="rounded-2xl border bg-white p-8 shadow-sm">
+          <button
+            onClick={() => navigate("/courses")}
+            className="text-sm font-semibold text-indigo-600"
+          >
+            ← Back to Courses
+          </button>
 
-          <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm text-indigo-600">
-            {course.level || "Beginner"}
-          </span>
+        </div>
+      </header>
 
-          <h1 className="mt-5 text-4xl font-bold text-slate-900">
-            {course.title || course.name}
-          </h1>
+      <main className="mx-auto max-w-5xl px-6 py-10">
 
-          <p className="mt-5 text-slate-600">
-            {course.description || "No description available."}
-          </p>
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+
+            <div>
+              <h1 className="text-4xl font-extrabold text-slate-900">
+                {course.title}
+              </h1>
+
+              <p className="mt-3 text-slate-500">
+                {course.description}
+              </p>
+            </div>
+
+            <span className="rounded-full bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-600">
+              {course.level}
+            </span>
+
+          </div>
+
+          {course.duration && (
+            <div className="mt-8">
+              <h3 className="text-sm font-bold uppercase text-slate-400">
+                Duration
+              </h3>
+
+              <p className="mt-2 text-slate-700">
+                {course.duration}
+              </p>
+            </div>
+          )}
+
+          {course.skills?.length > 0 && (
+            <div className="mt-8">
+
+              <h3 className="text-sm font-bold uppercase text-slate-400">
+                Skills
+              </h3>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+
+                {course.skills.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="rounded-lg bg-slate-100 px-3 py-2 text-sm text-slate-700"
+                  >
+                    {skill}
+                  </span>
+                ))}
+
+              </div>
+
+            </div>
+          )}
+
+          {course.topics?.length > 0 && (
+            <div className="mt-8">
+
+              <h3 className="text-sm font-bold uppercase text-slate-400">
+                Topics
+              </h3>
+
+              <ul className="mt-3 space-y-2">
+
+                {course.topics.map((topic, index) => (
+                  <li
+                    key={index}
+                    className="rounded-xl bg-slate-50 px-4 py-3 text-slate-700"
+                  >
+                    {topic}
+                  </li>
+                ))}
+
+              </ul>
+
+            </div>
+          )}
 
         </div>
 
-      </div>
+      </main>
+
     </div>
   );
 };

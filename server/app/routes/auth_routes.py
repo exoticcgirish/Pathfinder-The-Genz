@@ -9,11 +9,19 @@ auth_bp = Blueprint(
 )
 
 
-@auth_bp.route("/register", methods=["POST"])
+@auth_bp.route(
+    "/register",
+    methods=["POST"]
+)
 def register():
+
     return AuthController.register()
 
 
-@auth_bp.route("/login", methods=["POST"])
+@auth_bp.route(
+    "/login",
+    methods=["POST"]
+)
 def login():
+
     return AuthController.login()

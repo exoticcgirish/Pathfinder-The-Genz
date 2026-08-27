@@ -1,10 +1,18 @@
 from flask import request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
+
+from flask_jwt_extended import (
+    jwt_required,
+    get_jwt_identity
+)
 
 from app.services.user_service import UserService
 
 
 class UserController:
+
+    # =========================
+    # GET PROFILE
+    # =========================
 
     @staticmethod
     @jwt_required()
@@ -12,9 +20,12 @@ class UserController:
 
         user_id = get_jwt_identity()
 
-        user = UserService.get_profile(user_id)
+        user = UserService.get_profile(
+            user_id
+        )
 
         if not user:
+
             return jsonify({
                 "success": False,
                 "message": "User not found"
@@ -25,19 +36,17 @@ class UserController:
             "user": user
         }), 200
 
+    # =========================
+    # UPDATE PROFILE
+    # =========================
+
     @staticmethod
     @jwt_required()
     def update_profile():
 
         user_id = get_jwt_identity()
 
-        data = request.get_json()
-
-        if not data:
-            return jsonify({
-                "success": False,
-                "message": "Profile data is required"
-            }), 400
+        data = request.get_json() or {}
 
         profile = {
             "experienceLevel": data.get(
@@ -72,6 +81,7 @@ class UserController:
         )
 
         if not user:
+
             return jsonify({
                 "success": False,
                 "message": "Unable to update profile"

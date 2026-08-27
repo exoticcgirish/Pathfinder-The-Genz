@@ -1,5 +1,6 @@
-from flask import Blueprint, jsonify
-from app.config.database import get_db
+from flask import Blueprint
+
+from app.controllers.course_controller import CourseController
 
 
 course_bp = Blueprint(
@@ -8,31 +9,75 @@ course_bp = Blueprint(
 )
 
 
-@course_bp.route("", methods=["GET"])
+# =========================
+# GET COURSES
+# =========================
+
+@course_bp.route(
+    "",
+    methods=["GET"]
+)
 def get_courses():
 
-    try:
-        db = get_db()
+    return CourseController.get_all()
 
-        courses = list(
-            db["courses"].find({})
-        )
 
-        # Convert MongoDB ObjectId to string
-        for course in courses:
-            course["_id"] = str(course["_id"])
+# =========================
+# GET ONE COURSE
+# =========================
 
-        return jsonify({
-            "success": True,
-            "courses": courses
-        }), 200
+@course_bp.route(
+    "/<course_id>",
+    methods=["GET"]
+)
+def get_course(course_id):
 
-    except Exception as e:
+    return CourseController.get_one(
+        course_id
+    )
 
-        print("COURSES ERROR:", str(e))
 
-        return jsonify({
-            "success": False,
-            "message": "Failed to load courses",
-            "error": str(e)
-        }), 500
+# =========================
+# CREATE COURSE
+# ADMIN + CONTENT MANAGER
+# =========================
+
+@course_bp.route(
+    "",
+    methods=["POST"]
+)
+def create_course():
+
+    return CourseController.create()
+
+
+# =========================
+# UPDATE COURSE
+# ADMIN + CONTENT MANAGER
+# =========================
+
+@course_bp.route(
+    "/<course_id>",
+    methods=["PUT"]
+)
+def update_course(course_id):
+
+    return CourseController.update(
+        course_id
+    )
+
+
+# =========================
+# DELETE COURSE
+# ADMIN + CONTENT MANAGER
+# =========================
+
+@course_bp.route(
+    "/<course_id>",
+    methods=["DELETE"]
+)
+def delete_course(course_id):
+
+    return CourseController.delete(
+        course_id
+    )

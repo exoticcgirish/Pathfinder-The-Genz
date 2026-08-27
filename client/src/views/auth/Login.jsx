@@ -21,6 +21,34 @@ const Login = () => {
     }));
   };
 
+  const redirectByRole = (user) => {
+    const role = user?.role;
+
+    console.log("REDIRECT ROLE:", role);
+    console.log("REDIRECT USER:", user);
+
+    switch (role) {
+      case "admin":
+        navigate("/admin", { replace: true });
+        break;
+
+      case "content_manager":
+        navigate("/content-manager", { replace: true });
+        break;
+
+      case "student":
+        navigate("/dashboard", { replace: true });
+        break;
+
+      default:
+        console.warn("Unknown role:", role);
+
+        // Default normal user
+        navigate("/dashboard", { replace: true });
+        break;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -34,11 +62,24 @@ const Login = () => {
     try {
       setLoading(true);
 
-      await login(form.email, form.password);
+      const result = await login(
+        form.email.trim(),
+        form.password
+      );
 
-      navigate("/dashboard", {
-        replace: true,
-      });
+      const loggedUser = result?.user;
+
+      console.log("LOGIN USER:", loggedUser);
+      console.log("LOGIN ROLE:", loggedUser?.role);
+
+      if (!loggedUser?.role) {
+        setError(
+          "Login successful, but user role was not found. Please check the user's role in the database."
+        );
+        return;
+      }
+
+      redirectByRole(loggedUser);
     } catch (error) {
       console.error("LOGIN ERROR:", error);
 
@@ -56,6 +97,7 @@ const Login = () => {
   return (
     <div className="auth-background min-h-screen flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
+
         {/* Brand */}
         <div className="mb-8 text-center">
           <div className="inline-flex items-center gap-3">
@@ -75,6 +117,7 @@ const Login = () => {
 
         {/* Card */}
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60">
+
           <div className="mb-8">
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
               Welcome back
@@ -92,6 +135,8 @@ const Login = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
+
+            {/* Email */}
             <div>
               <label className="mb-2 block text-sm font-semibold text-slate-700">
                 Email
@@ -103,23 +148,16 @@ const Login = () => {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
+                autoComplete="email"
                 className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
               />
             </div>
 
+            {/* Password */}
             <div>
-              <div className="mb-2 flex items-center justify-between">
-                <label className="block text-sm font-semibold text-slate-700">
-                  Password
-                </label>
-
-                <button
-                  type="button"
-                  className="text-xs font-semibold text-indigo-600 hover:text-indigo-700"
-                >
-                  Forgot password?
-                </button>
-              </div>
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                Password
+              </label>
 
               <input
                 type="password"
@@ -127,10 +165,12 @@ const Login = () => {
                 value={form.password}
                 onChange={handleChange}
                 placeholder="Enter your password"
+                autoComplete="current-password"
                 className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
               />
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
@@ -138,13 +178,16 @@ const Login = () => {
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>
+
           </form>
 
           <div className="my-7 flex items-center gap-4">
             <div className="h-px flex-1 bg-slate-200" />
+
             <span className="text-xs font-medium text-slate-400">
               NEW TO PATHFINDER?
             </span>
+
             <div className="h-px flex-1 bg-slate-200" />
           </div>
 
@@ -159,6 +202,7 @@ const Login = () => {
         <p className="mt-6 text-center text-xs text-slate-400">
           © {new Date().getFullYear()} Pathfinder
         </p>
+
       </div>
     </div>
   );

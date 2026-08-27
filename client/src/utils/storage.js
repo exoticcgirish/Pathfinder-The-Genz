@@ -1,36 +1,32 @@
+const TOKEN_KEY = "pathfinder_token";
+const USER_KEY = "pathfinder_user";
+
 export const storage = {
   getToken() {
-    return localStorage.getItem("token");
+    return localStorage.getItem(TOKEN_KEY);
   },
 
   setToken(token) {
-    localStorage.setItem("token", token);
-  },
-
-  removeToken() {
-    localStorage.removeItem("token");
+    localStorage.setItem(TOKEN_KEY, token);
   },
 
   getUser() {
-    const user = localStorage.getItem("user");
-
     try {
+      const user = localStorage.getItem(USER_KEY);
+
       return user ? JSON.parse(user) : null;
-    } catch {
+    } catch (error) {
+      console.error("STORAGE USER ERROR:", error);
       return null;
     }
   },
 
   setUser(user) {
-    localStorage.setItem("user", JSON.stringify(user));
-  },
-
-  removeUser() {
-    localStorage.removeItem("user");
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
   },
 
   clear() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
   },
 };

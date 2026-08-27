@@ -5,35 +5,57 @@ from app.services.auth_service import AuthService
 
 class AuthController:
 
+    # =========================
+    # REGISTER
+    # =========================
+
     @staticmethod
     def register():
 
-        data = request.get_json()
+        data = request.get_json() or {}
 
         name = data.get("name")
         email = data.get("email")
         password = data.get("password")
 
+        # Default role
+        role = data.get("role", "learner")
+
         if not name or not email or not password:
+
             return jsonify({
                 "success": False,
                 "message": "All fields are required"
             }), 400
 
+        if len(password) < 6:
+
+            return jsonify({
+                "success": False,
+                "message": "Password must contain at least 6 characters"
+            }), 400
+
+        # Public registration can only create these roles
+        if role not in ["learner", "content_manager"]:
+
+            return jsonify({
+                "success": False,
+                "message": "Invalid role"
+            }), 400
+
         user, error = AuthService.register(
             name,
             email,
-            password
+            password,
+            role
         )
 
         if error:
+
             return jsonify({
                 "success": False,
                 "message": error
             }), 400
-
-        user.pop("password", None)
-        user.pop("_id", None)
 
         return jsonify({
             "success": True,
@@ -41,21 +63,32 @@ class AuthController:
             "user": user
         }), 201
 
+    # =========================
+    # LOGIN
+    # =========================
 
     @staticmethod
     def login():
 
-        data = request.get_json()
+        data = request.get_json() or {}
 
         email = data.get("email")
         password = data.get("password")
 
-        token, error = AuthService.login(
+        if not email or not password:
+
+            return jsonify({
+                "success": False,
+                "message": "Email and password are required"
+            }), 400
+
+        result, error = AuthService.login(
             email,
             password
         )
 
         if error:
+
             return jsonify({
                 "success": False,
                 "message": error
@@ -63,5 +96,8 @@ class AuthController:
 
         return jsonify({
             "success": True,
-            "token": token
+            "message": "Login successful",
+            "token": result["token"],
+            "role": result["role"],
+            "user": result["user"]
         }), 200

@@ -1,57 +1,97 @@
+from bson import ObjectId
+
 from app.config.database import get_db
 
 
 class CourseModel:
 
+    collection = get_db()["courses"]
+
+    # =========================
+    # GET ALL
+    # =========================
+
     @staticmethod
     def get_all():
-        db = get_db()
 
         return list(
-            db["courses"].find(
-                {},
-                {"_id": 0}
-            )
+            CourseModel.collection.find({})
         )
+
+    # =========================
+    # GET ONE
+    # =========================
 
     @staticmethod
-    def get_required_skills_for_career(career_goal):
-        db = get_db()
+    def get_by_id(course_id):
 
-        courses = db["courses"].find(
-            {},
-            {"_id": 0}
+        try:
+
+            return CourseModel.collection.find_one({
+                "_id": ObjectId(course_id)
+            })
+
+        except Exception:
+
+            return None
+
+    # =========================
+    # CREATE
+    # =========================
+
+    @staticmethod
+    def create(course_data):
+
+        result = CourseModel.collection.insert_one(
+            course_data
         )
 
-        career_words = set(
-            career_goal.lower().split()
-        )
+        course_data["_id"] = result.inserted_id
 
-        matched_courses = []
+        return course_data
 
-        for course in courses:
+    # =========================
+    # UPDATE
+    # =========================
 
-            text = " ".join([
-                course.get("title", ""),
-                course.get("description", ""),
-                " ".join(course.get("skills", [])),
-                " ".join(course.get("topics", []))
-            ]).lower()
+    @staticmethod
+    def update(
+        course_id,
+        course_data
+    ):
 
-            # Match career words against course content
-            if any(
-                word in text
-                for word in career_words
-                if len(word) > 2
-            ):
-                matched_courses.append(course)
+        try:
 
-        skills = set()
+            result = CourseModel.collection.update_one(
+                {
+                    "_id": ObjectId(course_id)
+                },
+                {
+                    "$set": course_data
+                }
+            )
 
-        for course in matched_courses:
-            for skill in course.get("skills", []):
-                skills.add(
-                    skill.lower().strip()
-                )
+            return result.matched_count > 0
 
-        return list(skills)
+        except Exception:
+
+            return False
+
+    # =========================
+    # DELETE
+    # =========================
+
+    @staticmethod
+    def delete(course_id):
+
+        try:
+
+            result = CourseModel.collection.delete_one({
+                "_id": ObjectId(course_id)
+            })
+
+            return result.deleted_count > 0
+
+        except Exception:
+
+            return False

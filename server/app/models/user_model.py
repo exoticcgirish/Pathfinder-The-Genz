@@ -1,4 +1,5 @@
 from bson import ObjectId
+
 from app.config.database import get_db
 
 
@@ -6,43 +7,60 @@ class UserModel:
 
     collection = get_db()["users"]
 
-    # -------------------------
-    # AUTH
-    # -------------------------
+    # =========================
+    # CREATE
+    # =========================
 
     @staticmethod
     def create(user_data):
 
-        result = UserModel.collection.insert_one(user_data)
+        result = UserModel.collection.insert_one(
+            user_data
+        )
 
-        user_data["_id"] = str(result.inserted_id)
+        user_data["_id"] = str(
+            result.inserted_id
+        )
 
         return user_data
+
+    # =========================
+    # FIND BY EMAIL
+    # =========================
 
     @staticmethod
     def find_by_email(email):
 
         return UserModel.collection.find_one({
-            "email": email
+            "email": email.strip().lower()
         })
 
-    # -------------------------
-    # USER PROFILE
-    # -------------------------
+    # =========================
+    # FIND BY ID
+    # =========================
 
     @staticmethod
     def find_by_id(user_id):
 
         try:
+
             return UserModel.collection.find_one({
                 "_id": ObjectId(user_id)
             })
 
         except Exception:
+
             return None
 
+    # =========================
+    # UPDATE PROFILE
+    # =========================
+
     @staticmethod
-    def update_profile(user_id, profile_data):
+    def update_profile(
+        user_id,
+        profile_data
+    ):
 
         try:
 
@@ -63,4 +81,5 @@ class UserModel:
             )
 
         except Exception:
+
             return False

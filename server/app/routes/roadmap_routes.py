@@ -1,53 +1,33 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint
 
-from app.models.roadmap_model import RoadmapModel
+from flask_jwt_extended import jwt_required
 
-roadmap_bp = Blueprint("roadmaps", __name__)
-
-
-@roadmap_bp.route("/", methods=["GET"])
-def get_roadmaps():
-
-    roadmaps = RoadmapModel.get_all()
-
-    return jsonify({
-        "success": True,
-        "count": len(roadmaps),
-        "roadmaps": roadmaps
-    }), 200
+from app.controllers.roadmap_controller import (
+    RoadmapController
+)
 
 
-@roadmap_bp.route("/", methods=["POST"])
-def create_roadmap():
-
-    data = request.get_json() or {}
-
-    if not data.get("careerGoal"):
-        return jsonify({
-            "success": False,
-            "message": "careerGoal is required"
-        }), 400
-
-    roadmap = RoadmapModel.create(data)
-
-    return jsonify({
-        "success": True,
-        "roadmap": roadmap
-    }), 201
+roadmap_bp = Blueprint(
+    "roadmap",
+    __name__
+)
 
 
-@roadmap_bp.route("/career/<career_goal>", methods=["GET"])
-def get_by_career(career_goal):
+@roadmap_bp.route(
+    "/generate",
+    methods=["POST"]
+)
+@jwt_required()
+def generate_roadmap():
 
-    roadmap = RoadmapModel.get_by_career(career_goal)
+    return RoadmapController.generate()
 
-    if not roadmap:
-        return jsonify({
-            "success": False,
-            "message": "Roadmap not found"
-        }), 404
 
-    return jsonify({
-        "success": True,
-        "roadmap": roadmap
-    }), 200
+@roadmap_bp.route(
+    "",
+    methods=["GET"]
+)
+@jwt_required()
+def get_roadmap():
+
+    return RoadmapController.get()

@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCourses } from "../../services/courseService";
+import { getCourses, deleteCourse } from "../../services/courseService";
+import { useAuth } from "../../context/AuthContext";
 
 const Courses = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    loadCourses();
-  }, []);
+  const isManager = user?.role === "content_manager" || user?.role === "admin";
 
   const loadCourses = async () => {
     try {
@@ -20,186 +20,190 @@ const Courses = () => {
 
       const response = await getCourses();
 
-      console.log("COURSES RESPONSE:", response.data);
+      setCourses(response.data?.courses || []);
+    } catch (error) {
+      console.error("GET COURSES ERROR:", error);
 
-      // Backend returns { success: true, courses: [] }
-      setCourses(response.data.courses || []);
-    } catch (err) {
-      console.error("COURSES ERROR:", err);
-      setError("Failed to load courses.");
+      setError(error.response?.data?.message || "Failed to load courses.");
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    loadCourses();
+  }, []);
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this course?",
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteCourse(id);
+
+      setCourses((previous) => previous.filter((course) => course._id !== id));
+    } catch (error) {
+      console.error("DELETE COURSE ERROR:", error);
+
+      alert(error.response?.data?.message || "Failed to delete course.");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className='min-h-screen flex items-center justify-center'>
+        <div className='text-slate-500'>Loading courses...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#f6f8fc] text-[#111827]">
-
+    <div className='min-h-screen bg-slate-50'>
       {/* HEADER */}
-      <header className="h-[105px] bg-white border-b border-[#e5e7eb] flex items-center justify-between px-8 md:px-12">
+      <header className='border-b bg-white'>
+        <div className='mx-auto flex max-w-7xl items-center justify-between px-6 py-5'>
+          <div>
+            <h1 className='text-2xl font-extrabold text-slate-900'>Courses</h1>
 
-        <div>
-          <p className="text-sm font-semibold tracking-wide text-[#7c8499] uppercase">
-            Learning
-          </p>
+            <p className='text-sm text-slate-500'>
+              Explore available learning courses
+            </p>
+          </div>
 
-          <h1 className="text-3xl font-bold mt-1">
-            Explore Courses
-          </h1>
+          {isManager && (
+            <button
+              onClick={() => navigate("/content-manager/courses/add")}
+              className='rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white hover:bg-indigo-700'
+            >
+              + Add Course
+            </button>
+          )}
         </div>
-
-        {/* Dashboard button */}
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="flex items-center gap-2 px-6 py-3 rounded-xl border border-[#dce1eb] bg-white text-[#475569] font-semibold hover:bg-[#f8f9ff] transition"
-        >
-          <span className="text-xl">←</span>
-          Dashboard
-        </button>
       </header>
 
-      {/* MAIN */}
-      <main className="px-8 md:px-12 py-10 max-w-[1400px] mx-auto">
-
-        {/* INTRO */}
-        <section className="mb-10">
-          <h2 className="text-4xl font-bold mb-3">
-            Find your next skill
-          </h2>
-
-          <p className="text-lg text-[#64748b]">
-            Explore courses that match your learning goals and career direction.
-          </p>
-        </section>
-
-        {/* ERROR */}
+      {/* CONTENT */}
+      <main className='mx-auto max-w-7xl px-6 py-10'>
         {error && (
-          <div className="bg-red-50 border border-red-100 text-red-600 rounded-xl px-5 py-4 mb-8">
+          <div className='mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-600'>
             {error}
           </div>
         )}
 
-        {/* COURSE HEADER */}
-        {!loading && !error && (
-          <div className="mb-6">
-            <p className="text-sm font-semibold tracking-wide text-[#94a3b8] uppercase">
-              Available Courses
+        {courses.length === 0 ? (
+          <div className='rounded-2xl border bg-white p-10 text-center'>
+            <h2 className='text-xl font-bold text-slate-900'>
+              No courses found
+            </h2>
+
+            <p className='mt-2 text-slate-500'>
+              No courses have been added yet.
             </p>
 
-            <h3 className="text-2xl font-bold mt-1">
-              {courses.length} courses
-            </h3>
+            {isManager && (
+              <button
+                onClick={() => navigate("/content-manager/courses/add")}
+                className='mt-6 rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white'
+              >
+                Add First Course
+              </button>
+            )}
           </div>
-        )}
-
-        {/* LOADING */}
-        {loading && (
-          <div className="text-center py-20 text-[#64748b]">
-            Loading courses...
-          </div>
-        )}
-
-        {/* COURSES GRID */}
-        {!loading && courses.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-7">
-
+        ) : (
+          <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
             {courses.map((course) => (
               <div
                 key={course._id}
-                className="bg-white border border-[#e1e5ed] rounded-2xl p-7 shadow-sm hover:shadow-md transition"
+                className='rounded-2xl border border-slate-200 bg-white p-6 shadow-sm'
               >
+                <div className='mb-4 flex items-start justify-between gap-3'>
+                  <h2 className='text-xl font-bold text-slate-900'>
+                    {course.title}
+                  </h2>
 
-                {/* TOP */}
-                <div className="flex items-start justify-between mb-7">
-
-                  {/* Book icon */}
-                  <div className="w-14 h-14 rounded-xl bg-[#eef0ff] flex items-center justify-center text-2xl">
-                    📚
-                  </div>
-
-                  {/* LEVEL */}
-                  <span
-                    className={`px-4 py-2 rounded-full text-sm font-semibold
-                      ${
-                        course.level?.toLowerCase() === "beginner"
-                          ? "bg-green-100 text-green-600"
-                          : course.level?.toLowerCase() === "advanced"
-                          ? "bg-purple-100 text-purple-600"
-                          : "bg-blue-100 text-blue-600"
-                      }
-                    `}
-                  >
-                    {course.level}
+                  <span className='rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-600'>
+                    {course.level || "Beginner"}
                   </span>
                 </div>
 
-                {/* TITLE */}
-                <h3 className="text-2xl font-bold mb-4">
-                  {course.title}
-                </h3>
-
-                {/* DESCRIPTION */}
-                <p className="text-[#64748b] leading-7 min-h-[80px]">
-                  {course.description}
+                <p className='line-clamp-3 text-sm text-slate-500'>
+                  {course.description || "No description available."}
                 </p>
-
-                {/* COURSE INFO */}
-                <div className="flex items-center gap-8 mt-6 text-[#64748b]">
-
-                  <div className="flex items-center gap-2">
-                    <span>◷</span>
-                    <span>{course.duration}</span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <span>🎯</span>
-                    <span>
-                      {course.topics?.length || 0} topics
-                    </span>
-                  </div>
-
-                </div>
 
                 {/* SKILLS */}
                 {course.skills?.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-6">
-                    {course.skills.map((skill, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-2 bg-[#f0f1ff] text-[#4f46e5] rounded-lg text-sm font-medium"
-                      >
-                        {skill}
-                      </span>
-                    ))}
+                  <div className='mt-4'>
+                    <p className='mb-2 text-xs font-bold uppercase text-slate-400'>
+                      Skills
+                    </p>
+
+                    <div className='flex flex-wrap gap-2'>
+                      {course.skills.map((skill, index) => (
+                        <span
+                          key={index}
+                          className='rounded-lg bg-slate-100 px-2 py-1 text-xs text-slate-600'
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 )}
 
-                {/* START BUTTON */}
-                <button
-                  onClick={() => {
-                    // Add course detail route later
-                    console.log("Selected course:", course);
-                  }}
-                  className="w-full mt-8 py-4 rounded-xl bg-[#5141f5] text-white font-semibold text-lg hover:bg-[#4334dc] transition"
-                >
-                  Start Learning →
-                </button>
+                {/* TOPICS */}
+                {course.topics?.length > 0 && (
+                  <div className='mt-4'>
+                    <p className='mb-2 text-xs font-bold uppercase text-slate-400'>
+                      Topics
+                    </p>
 
+                    <p className='text-sm text-slate-600'>
+                      {course.topics.join(", ")}
+                    </p>
+                  </div>
+                )}
+
+                {course.duration && (
+                  <p className='mt-4 text-sm text-slate-500'>
+                    ⏱ {course.duration}
+                  </p>
+                )}
+
+                {/* ACTIONS */}
+                <div className='mt-6 flex gap-3'>
+                  <button
+                    onClick={() => navigate(`/courses/${course._id}`)}
+                    className='flex-1 rounded-xl border border-slate-300 px-4 py-2.5 font-semibold text-slate-700 hover:bg-slate-50'
+                  >
+                    View
+                  </button>
+
+                  {isManager && (
+                    <button
+                      onClick={() =>
+                        navigate(`/content-manager/courses/edit/${course._id}`)
+                      }
+                      className='rounded-xl bg-indigo-600 px-4 py-2.5 font-semibold text-white hover:bg-indigo-700'
+                    >
+                      Edit
+                    </button>
+                  )}
+
+                  {isManager && (
+                    <button
+                      onClick={() => handleDelete(course._id)}
+                      className='rounded-xl border border-red-200 px-4 py-2.5 font-semibold text-red-600 hover:bg-red-50'
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
-
           </div>
         )}
-
-        {/* NO COURSES */}
-        {!loading && !error && courses.length === 0 && (
-          <div className="bg-white rounded-2xl border p-10 text-center">
-            <p className="text-lg text-[#64748b]">
-              No courses available yet.
-            </p>
-          </div>
-        )}
-
       </main>
     </div>
   );

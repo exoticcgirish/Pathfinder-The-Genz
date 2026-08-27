@@ -7,8 +7,33 @@ import { storage } from "../utils/storage";
 
 const AuthContext = createContext(null);
 
+const getUserRole = (user) => {
+  if (!user) return null;
+
+  return (
+    user.role ||
+    user.userRole ||
+    user.roleName ||
+    user.accountType ||
+    null
+  );
+};
+
+const normalizeUser = (user) => {
+  if (!user) return null;
+
+  return {
+    ...user,
+    role: getUserRole(user),
+  };
+};
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(storage.getUser());
+  const [user, setUser] = useState(() => {
+    const savedUser = storage.getUser();
+    return normalizeUser(savedUser);
+  });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,8 +53,13 @@ export const AuthProvider = ({ children }) => {
           response.data?.data ||
           response.data;
 
-        setUser(profileUser);
-        storage.setUser(profileUser);
+        const normalizedUser = normalizeUser(profileUser);
+
+        console.log("RESTORED USER:", normalizedUser);
+        console.log("RESTORED ROLE:", normalizedUser?.role);
+
+        setUser(normalizedUser);
+        storage.setUser(normalizedUser);
       } catch (error) {
         console.error("AUTH RESTORE ERROR:", error);
 
@@ -51,6 +81,8 @@ export const AuthProvider = ({ children }) => {
 
     const data = response.data;
 
+    console.log("LOGIN RESPONSE:", data);
+
     if (!data?.success || !data?.token) {
       throw new Error(data?.message || "Login failed");
     }
@@ -59,6 +91,11 @@ export const AuthProvider = ({ children }) => {
 
     let loggedUser = data.user || null;
 
+    /*
+     * Get complete user profile.
+     * This is important because role may be returned
+     * by /users/profile even if login response does not contain it.
+     */
     try {
       const profileResponse = await getProfile();
 
@@ -71,12 +108,17 @@ export const AuthProvider = ({ children }) => {
       console.warn("PROFILE FETCH ERROR:", error);
     }
 
-    storage.setUser(loggedUser);
-    setUser(loggedUser);
+    const normalizedUser = normalizeUser(loggedUser);
+
+    console.log("LOGIN USER:", normalizedUser);
+    console.log("LOGIN ROLE:", normalizedUser?.role);
+
+    storage.setUser(normalizedUser);
+    setUser(normalizedUser);
 
     return {
       ...data,
-      user: loggedUser,
+      user: normalizedUser,
     };
   };
 
@@ -94,20 +136,25 @@ export const AuthProvider = ({ children }) => {
         response.data?.data ||
         response.data;
 
-      storage.setUser(updatedUser);
-      setUser(updatedUser);
+      const normalizedUser = normalizeUser(updatedUser);
 
-      return updatedUser;
+      storage.setUser(normalizedUser);
+      setUser(normalizedUser);
+
+      return normalizedUser;
     } catch (error) {
       console.error("REFRESH USER ERROR:", error);
       throw error;
     }
   };
 
+  const role = getUserRole(user);
+
   return (
     <AuthContext.Provider
       value={{
         user,
+        role,
         loading,
         login,
         logout,
