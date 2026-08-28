@@ -34,7 +34,9 @@ const Dashboard = () => {
     ? profile.interests
     : [];
 
-  const skills = Array.isArray(user?.skills)
+  const skills = Array.isArray(profile.skills)
+    ? profile.skills
+    : Array.isArray(user?.skills)
     ? user.skills
     : [];
 
@@ -53,6 +55,11 @@ const Dashboard = () => {
   const learningPreference =
     profile.learningPreference || "Not set";
 
+  const goTo = (path) => {
+    setSidebarOpen(false);
+    window.location.href = path;
+  };
+
   const handleLogout = () => {
     logout();
     window.location.href = "/login";
@@ -62,6 +69,7 @@ const Dashboard = () => {
     {
       label: "Dashboard",
       icon: LayoutDashboard,
+      path: "/dashboard",
       active: true,
     },
     {
@@ -88,7 +96,8 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-[#f5f8fc] text-slate-800">
-      {/* Mobile overlay */}
+
+      {/* MOBILE OVERLAY */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-30 bg-slate-900/40 lg:hidden"
@@ -96,23 +105,38 @@ const Dashboard = () => {
         />
       )}
 
-      {/* Sidebar */}
+      {/* =========================
+          SIDEBAR
+      ========================= */}
+
       <aside
-        className={`sidebar-scroll fixed inset-y-0 left-0 z-40 flex w-72 flex-col overflow-y-auto border-r border-slate-200 bg-white transition-transform duration-300 lg:translate-x-0 ${
-          sidebarOpen
-            ? "translate-x-0"
-            : "-translate-x-full"
-        }`}
+        className={`
+          fixed inset-y-0 left-0 z-40
+          flex w-72 flex-col
+          border-r border-slate-200
+          bg-white
+          transition-transform duration-300
+          lg:translate-x-0
+          ${
+            sidebarOpen
+              ? "translate-x-0"
+              : "-translate-x-full"
+          }
+        `}
       >
-        {/* Logo */}
-        <div className="flex h-24 items-center border-b border-slate-100 px-7">
+
+        {/* LOGO */}
+
+        <div className="flex h-24 shrink-0 items-center border-b border-slate-100 px-7">
+
           <div className="flex items-center gap-3">
+
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 text-xl font-black text-white">
               P
             </div>
 
             <div>
-              <h1 className="text-xl font-extrabold tracking-tight text-slate-900">
+              <h1 className="text-xl font-extrabold text-slate-900">
                 Pathfinder
               </h1>
 
@@ -120,6 +144,7 @@ const Dashboard = () => {
                 Your learning navigator
               </p>
             </div>
+
           </div>
 
           <button
@@ -128,31 +153,37 @@ const Dashboard = () => {
           >
             <X size={20} />
           </button>
+
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-4 py-7">
+        {/* NAVIGATION */}
+
+        <nav className="flex-1 overflow-y-auto px-4 py-7">
+
           <p className="mb-3 px-3 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">
             Main menu
           </p>
 
           <div className="space-y-1">
+
             {navItems.map((item) => {
               const Icon = item.icon;
 
               return (
                 <button
                   key={item.label}
-                  onClick={() => {
-                    if (item.path) {
-                      window.location.href = item.path;
+                  onClick={() => goTo(item.path)}
+                  className={`
+                    group flex w-full items-center gap-3
+                    rounded-xl px-4 py-3
+                    text-left text-sm font-semibold
+                    transition
+                    ${
+                      item.active
+                        ? "bg-indigo-50 text-indigo-700"
+                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                     }
-                  }}
-                  className={`group flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold transition ${
-                    item.active
-                      ? "bg-indigo-50 text-indigo-700"
-                      : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-                  }`}
+                  `}
                 >
                   <Icon size={20} />
 
@@ -164,37 +195,49 @@ const Dashboard = () => {
                 </button>
               );
             })}
+
           </div>
 
           <p className="mb-3 mt-9 px-3 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">
             Account
           </p>
 
+          {/* PROFILE */}
+
           <button
-            onClick={() => {
-              window.location.href = "/profile";
-            }}
+            onClick={() => goTo("/profile")}
             className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
           >
             <User size={20} />
             Profile
           </button>
 
-          <button className="mt-1 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-500 transition hover:bg-slate-50 hover:text-slate-900">
+          <button
+            className="mt-1 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
+          >
             <Settings size={20} />
             Settings
           </button>
+
         </nav>
 
-        {/* Sidebar bottom */}
-        <div className="border-t border-slate-100 p-4">
+        {/* SIDEBAR USER */}
+
+        <div className="shrink-0 border-t border-slate-100 p-4">
+
           <div className="rounded-2xl bg-slate-50 p-4">
-            <div className="mb-3 flex items-center gap-3">
+
+            <div
+              className="mb-3 flex cursor-pointer items-center gap-3"
+              onClick={() => goTo("/profile")}
+            >
+
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
                 {name.charAt(0).toUpperCase()}
               </div>
 
               <div className="min-w-0">
+
                 <p className="truncate text-sm font-bold text-slate-800">
                   {name}
                 </p>
@@ -202,7 +245,9 @@ const Dashboard = () => {
                 <p className="truncate text-xs text-slate-400">
                   {user?.email}
                 </p>
+
               </div>
+
             </div>
 
             <button
@@ -212,14 +257,23 @@ const Dashboard = () => {
               <LogOut size={17} />
               Logout
             </button>
+
           </div>
+
         </div>
+
       </aside>
 
-      {/* Main */}
+      {/* =========================
+          MAIN
+      ========================= */}
+
       <div className="lg:pl-72">
-        {/* Header */}
-        <header className="sticky top-0 z-20 flex h-24 items-center justify-between border-b border-slate-200 bg-white/95 px-5 backdrop-blur md:px-8">
+
+        {/* HEADER */}
+
+        <header className="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-slate-200 bg-white/95 px-5 backdrop-blur md:px-8">
+
           <button
             onClick={() => setSidebarOpen(true)}
             className="rounded-xl border border-slate-200 p-2.5 text-slate-600 lg:hidden"
@@ -228,6 +282,7 @@ const Dashboard = () => {
           </button>
 
           <div className="hidden lg:block">
+
             <p className="text-sm font-medium text-slate-400">
               Learning dashboard
             </p>
@@ -235,25 +290,43 @@ const Dashboard = () => {
             <h2 className="text-xl font-extrabold text-slate-900">
               Overview
             </h2>
+
           </div>
 
           <div className="ml-auto flex items-center gap-3">
-            <button className="hidden items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 sm:flex">
+
+            <button
+              onClick={() => goTo("/chat")}
+              className="hidden items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 sm:flex"
+            >
               <MessageCircle size={18} />
               AI Mentor
             </button>
 
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
+            {/* PROFILE AVATAR */}
+
+            <button
+              onClick={() => goTo("/profile")}
+              title="Open Profile"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700 transition hover:ring-4 hover:ring-indigo-100"
+            >
               {name.charAt(0).toUpperCase()}
-            </div>
+            </button>
+
           </div>
+
         </header>
 
-        {/* Content */}
+        {/* CONTENT */}
+
         <main className="mx-auto max-w-[1500px] px-5 py-7 md:px-8 lg:px-10">
-          {/* Welcome */}
+
+          {/* WELCOME */}
+
           <section className="relative overflow-hidden rounded-3xl bg-slate-900 p-7 text-white shadow-xl shadow-slate-200 md:p-9">
+
             <div className="relative z-10 max-w-2xl">
+
               <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-indigo-200">
                 <Sparkles size={14} />
                 PERSONALIZED LEARNING
@@ -269,18 +342,26 @@ const Dashboard = () => {
                 step.
               </p>
 
-              <button className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-slate-900 transition hover:bg-indigo-50">
+              <button
+                onClick={() => goTo("/roadmap")}
+                className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-slate-900 transition hover:bg-indigo-50"
+              >
                 Continue learning
                 <ChevronRight size={17} />
               </button>
+
             </div>
 
             <div className="absolute -right-20 -top-32 h-80 w-80 rounded-full bg-indigo-600/30 blur-3xl" />
+
             <div className="absolute -bottom-40 right-40 h-80 w-80 rounded-full bg-sky-500/20 blur-3xl" />
+
           </section>
 
-          {/* Stats */}
+          {/* STATS */}
+
           <section className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
             <StatCard
               icon={BookOpen}
               title="Completed courses"
@@ -308,14 +389,21 @@ const Dashboard = () => {
               value={formatValue(experienceLevel)}
               description="Current level"
             />
+
           </section>
 
-          {/* Main grid */}
+          {/* MAIN GRID */}
+
           <section className="mt-7 grid gap-7 xl:grid-cols-[1.5fr_1fr]">
-            {/* Career goal */}
+
+            {/* CAREER */}
+
             <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+
               <div className="flex items-start justify-between">
+
                 <div>
+
                   <p className="text-xs font-bold uppercase tracking-wider text-indigo-600">
                     Career direction
                   </p>
@@ -323,15 +411,19 @@ const Dashboard = () => {
                   <h2 className="mt-2 text-2xl font-extrabold text-slate-900">
                     {careerGoal}
                   </h2>
+
                 </div>
 
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
                   <Compass size={22} />
                 </div>
+
               </div>
 
               <div className="mt-7">
+
                 <div className="mb-2 flex items-center justify-between text-sm">
+
                   <span className="font-semibold text-slate-600">
                     Profile completion
                   </span>
@@ -339,21 +431,24 @@ const Dashboard = () => {
                   <span className="font-bold text-slate-900">
                     {calculateProfileCompletion(profile)}%
                   </span>
+
                 </div>
 
                 <div className="h-3 overflow-hidden rounded-full bg-slate-100">
+
                   <div
                     className="h-full rounded-full bg-indigo-600 transition-all"
                     style={{
-                      width: `${calculateProfileCompletion(
-                        profile
-                      )}%`,
+                      width: `${calculateProfileCompletion(profile)}%`,
                     }}
                   />
+
                 </div>
+
               </div>
 
               <div className="mt-7 grid gap-4 sm:grid-cols-2">
+
                 <InfoBox
                   label="Experience level"
                   value={formatValue(experienceLevel)}
@@ -363,13 +458,19 @@ const Dashboard = () => {
                   label="Learning preference"
                   value={formatValue(learningPreference)}
                 />
+
               </div>
+
             </div>
 
-            {/* Interests */}
+            {/* INTERESTS */}
+
             <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+
               <div className="flex items-center justify-between">
+
                 <div>
+
                   <p className="text-xs font-bold uppercase tracking-wider text-indigo-600">
                     Your interests
                   </p>
@@ -377,13 +478,19 @@ const Dashboard = () => {
                   <h2 className="mt-2 text-xl font-extrabold text-slate-900">
                     Learning interests
                   </h2>
+
                 </div>
 
-                <Sparkles className="text-indigo-500" size={22} />
+                <Sparkles
+                  className="text-indigo-500"
+                  size={22}
+                />
+
               </div>
 
               {interests.length > 0 ? (
                 <div className="mt-6 flex flex-wrap gap-2">
+
                   {interests.map((interest, index) => (
                     <span
                       key={`${interest}-${index}`}
@@ -392,6 +499,7 @@ const Dashboard = () => {
                       {interest}
                     </span>
                   ))}
+
                 </div>
               ) : (
                 <div className="mt-6 rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">
@@ -400,19 +508,30 @@ const Dashboard = () => {
                 </div>
               )}
 
-              <button className="mt-6 flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700">
+              <button
+                onClick={() => goTo("/profile")}
+                className="mt-6 flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700"
+              >
                 Update interests
                 <ChevronRight size={16} />
               </button>
+
             </div>
+
           </section>
 
-          {/* Bottom */}
+          {/* BOTTOM */}
+
           <section className="mt-7 grid gap-7 lg:grid-cols-2">
-            {/* Courses */}
+
+            {/* COURSES */}
+
             <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+
               <div className="flex items-center justify-between">
+
                 <div>
+
                   <p className="text-xs font-bold uppercase tracking-wider text-indigo-600">
                     Learning
                   </p>
@@ -420,37 +539,50 @@ const Dashboard = () => {
                   <h2 className="mt-1 text-xl font-extrabold text-slate-900">
                     Courses
                   </h2>
+
                 </div>
 
-                <button className="text-sm font-bold text-indigo-600">
+                <button
+                  onClick={() => goTo("/courses")}
+                  className="text-sm font-bold text-indigo-600"
+                >
                   View all
                 </button>
+
               </div>
 
               {completedCourses.length > 0 ? (
                 <div className="mt-6 space-y-3">
-                  {completedCourses.slice(0, 3).map((course, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-4 rounded-2xl border border-slate-100 p-4"
-                    >
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
-                        <BookOpen size={20} />
-                      </div>
 
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-bold text-slate-800">
-                          {typeof course === "string"
-                            ? course
-                            : course?.title || "Completed course"}
-                        </p>
+                  {completedCourses
+                    .slice(0, 3)
+                    .map((course, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-4 rounded-2xl border border-slate-100 p-4"
+                      >
 
-                        <p className="mt-1 text-xs text-emerald-600">
-                          Completed
-                        </p>
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                          <BookOpen size={20} />
+                        </div>
+
+                        <div className="min-w-0">
+
+                          <p className="truncate text-sm font-bold text-slate-800">
+                            {typeof course === "string"
+                              ? course
+                              : course?.title || "Completed course"}
+                          </p>
+
+                          <p className="mt-1 text-xs text-emerald-600">
+                            Completed
+                          </p>
+
+                        </div>
+
                       </div>
-                    </div>
-                  ))}
+                    ))}
+
                 </div>
               ) : (
                 <EmptyState
@@ -459,12 +591,17 @@ const Dashboard = () => {
                   description="Start learning to build your course history."
                 />
               )}
+
             </div>
 
-            {/* Skills */}
+            {/* SKILLS */}
+
             <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+
               <div className="flex items-center justify-between">
+
                 <div>
+
                   <p className="text-xs font-bold uppercase tracking-wider text-indigo-600">
                     Development
                   </p>
@@ -472,20 +609,27 @@ const Dashboard = () => {
                   <h2 className="mt-1 text-xl font-extrabold text-slate-900">
                     Skills
                   </h2>
+
                 </div>
 
-                <button className="text-sm font-bold text-indigo-600">
+                <button
+                  onClick={() => goTo("/profile")}
+                  className="text-sm font-bold text-indigo-600"
+                >
                   Manage
                 </button>
+
               </div>
 
               {skills.length > 0 ? (
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
+
                   {skills.slice(0, 6).map((skill, index) => (
                     <div
                       key={index}
                       className="rounded-2xl border border-slate-100 bg-slate-50 p-4"
                     >
+
                       <p className="text-sm font-bold text-slate-800">
                         {typeof skill === "string"
                           ? skill
@@ -493,10 +637,14 @@ const Dashboard = () => {
                       </p>
 
                       <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200">
+
                         <div className="h-full w-2/5 rounded-full bg-indigo-500" />
+
                       </div>
+
                     </div>
                   ))}
+
                 </div>
               ) : (
                 <EmptyState
@@ -505,13 +653,22 @@ const Dashboard = () => {
                   description="Your skills will appear here as you build them."
                 />
               )}
+
             </div>
+
           </section>
+
         </main>
+
       </div>
+
     </div>
   );
 };
+
+/* =========================
+   COMPONENTS
+========================= */
 
 const StatCard = ({
   icon: Icon,
@@ -521,8 +678,11 @@ const StatCard = ({
 }) => {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+
       <div className="flex items-start justify-between">
+
         <div>
+
           <p className="text-xs font-semibold text-slate-400">
             {title}
           </p>
@@ -534,12 +694,15 @@ const StatCard = ({
           <p className="mt-1 text-xs text-slate-400">
             {description}
           </p>
+
         </div>
 
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
           <Icon size={19} />
         </div>
+
       </div>
+
     </div>
   );
 };
@@ -547,6 +710,7 @@ const StatCard = ({
 const InfoBox = ({ label, value }) => {
   return (
     <div className="rounded-2xl bg-slate-50 p-4">
+
       <p className="text-xs font-medium text-slate-400">
         {label}
       </p>
@@ -554,6 +718,7 @@ const InfoBox = ({ label, value }) => {
       <p className="mt-1 text-sm font-bold capitalize text-slate-800">
         {value}
       </p>
+
     </div>
   );
 };
@@ -565,11 +730,13 @@ const EmptyState = ({
 }) => {
   return (
     <div className="mt-6 flex items-center gap-4 rounded-2xl bg-slate-50 p-5">
+
       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-slate-400">
         <Icon size={20} />
       </div>
 
       <div>
+
         <p className="text-sm font-bold text-slate-700">
           {title}
         </p>
@@ -577,7 +744,9 @@ const EmptyState = ({
         <p className="mt-1 text-xs leading-5 text-slate-400">
           {description}
         </p>
+
       </div>
+
     </div>
   );
 };
@@ -602,7 +771,9 @@ const calculateProfileCompletion = (profile) => {
 
   const completed = fields.filter(Boolean).length;
 
-  return Math.round((completed / fields.length) * 100);
+  return Math.round(
+    (completed / fields.length) * 100
+  );
 };
 
 export default Dashboard;

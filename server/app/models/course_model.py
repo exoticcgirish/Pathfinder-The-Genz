@@ -13,7 +13,6 @@ class CourseModel:
 
     @staticmethod
     def get_all():
-
         return list(
             CourseModel.collection.find({})
         )
@@ -26,13 +25,11 @@ class CourseModel:
     def get_by_id(course_id):
 
         try:
-
             return CourseModel.collection.find_one({
                 "_id": ObjectId(course_id)
             })
 
         except Exception:
-
             return None
 
     # =========================
@@ -55,10 +52,7 @@ class CourseModel:
     # =========================
 
     @staticmethod
-    def update(
-        course_id,
-        course_data
-    ):
+    def update(course_id, course_data):
 
         try:
 
@@ -74,7 +68,6 @@ class CourseModel:
             return result.matched_count > 0
 
         except Exception:
-
             return False
 
     # =========================
@@ -93,5 +86,59 @@ class CourseModel:
             return result.deleted_count > 0
 
         except Exception:
-
             return False
+
+    # =========================
+    # FIND COURSES FOR ROADMAP
+    # =========================
+
+    @staticmethod
+    def find_matching_courses(keywords):
+
+        if not keywords:
+            return []
+
+        conditions = []
+
+        for keyword in keywords:
+
+            keyword = str(keyword).strip()
+
+            if not keyword:
+                continue
+
+            conditions.extend([
+                {
+                    "title": {
+                        "$regex": keyword,
+                        "$options": "i"
+                    }
+                },
+                {
+                    "description": {
+                        "$regex": keyword,
+                        "$options": "i"
+                    }
+                },
+                {
+                    "skills": {
+                        "$regex": keyword,
+                        "$options": "i"
+                    }
+                },
+                {
+                    "topics": {
+                        "$regex": keyword,
+                        "$options": "i"
+                    }
+                }
+            ])
+
+        if not conditions:
+            return []
+
+        return list(
+            CourseModel.collection.find({
+                "$or": conditions
+            })
+        )
