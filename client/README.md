@@ -1,19 +1,23 @@
-# React + Vite
+# Pathfinder Client (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+The frontend for **Pathfinder**, built with React 18, Vite, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## 🚀 Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### 1. Install dependencies
+```bash
+npm install
+```
 
-## React Compiler
+### 2. Run in development mode
+```bash
+npm run dev
+```
+The application will be live at `http://localhost:5173`.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## 📁 Folder Structure
+- `src/views/` - Main pages (Dashboard, Courses, Roadmap, Progress, AI Chat, Profile, Admin)
+- `src/components/` - Shared layouts and UI components
+- `src/services/` - Axios API services for communicating with the Flask backend
+- `src/routes/` - Route definitions, protected route wrappers, and role-based guards
+- `src/context/` - AuthContext and user session management
