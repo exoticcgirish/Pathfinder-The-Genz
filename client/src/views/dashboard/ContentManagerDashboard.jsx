@@ -13,7 +13,6 @@ const ContentManagerDashboard = () => {
   return (
     <div className="min-h-screen bg-slate-50">
 
-      {/* Header */}
       <header className="border-b border-slate-200 bg-white">
 
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
@@ -55,7 +54,6 @@ const ContentManagerDashboard = () => {
 
       </header>
 
-      {/* Main */}
       <main className="mx-auto max-w-7xl px-6 py-10">
 
         <div className="mb-8">
@@ -76,7 +74,6 @@ const ContentManagerDashboard = () => {
 
         <div className="grid gap-6 md:grid-cols-3">
 
-          {/* ADD COURSE */}
           <Link
             to="/content-manager/courses/add"
             className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
@@ -100,7 +97,6 @@ const ContentManagerDashboard = () => {
 
           </Link>
 
-          {/* VIEW COURSES */}
           <Link
             to="/courses"
             className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
@@ -124,7 +120,6 @@ const ContentManagerDashboard = () => {
 
           </Link>
 
-          {/* MANAGE CONTENT */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
             <div className="mb-4 text-4xl">

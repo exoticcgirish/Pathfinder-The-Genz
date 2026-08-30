@@ -13,7 +13,6 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-slate-50">
 
-      {/* Header */}
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
 
@@ -50,7 +49,6 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      {/* Main */}
       <main className="mx-auto max-w-7xl px-6 py-10">
 
         <div className="mb-8">
@@ -69,7 +67,6 @@ const AdminDashboard = () => {
 
         <div className="grid gap-6 md:grid-cols-3">
 
-          {/* Courses */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
             <div className="mb-4 text-4xl">
@@ -93,7 +90,6 @@ const AdminDashboard = () => {
 
           </div>
 
-          {/* Content Manager */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
             <div className="mb-4 text-4xl">
@@ -117,7 +113,6 @@ const AdminDashboard = () => {
 
           </div>
 
-          {/* Users */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
             <div className="mb-4 text-4xl">

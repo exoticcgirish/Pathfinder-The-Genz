@@ -20,9 +20,6 @@ from app.models.roadmap_model import RoadmapModel
 
 class RoadmapService:
 
-    # =========================================================
-    # NORMALIZE
-    # =========================================================
 
     @staticmethod
     def normalize(value):
@@ -31,9 +28,6 @@ class RoadmapService:
             value or ""
         ).strip().lower()
 
-    # =========================================================
-    # EXTRACT USER SKILL NAMES
-    # =========================================================
 
     @staticmethod
     def extract_skill_names(skills):
@@ -61,9 +55,6 @@ class RoadmapService:
 
         return result
 
-    # =========================================================
-    # MATCH COURSE FROM MONGODB
-    # =========================================================
 
     @staticmethod
     def match_course(
@@ -242,9 +233,6 @@ class RoadmapService:
                 best_score
         }
 
-    # =========================================================
-    # YOUTUBE PLAYLIST
-    # =========================================================
 
     @staticmethod
     def find_youtube_playlist(
@@ -402,11 +390,6 @@ class RoadmapService:
                     query
             }
 
-    # =========================================================
-    # FALLBACK PHASE GENERATOR
-    #
-    # Used if Gemini fails or returns invalid phases.
-    # =========================================================
 
     @staticmethod
     def build_fallback_phases(
@@ -545,9 +528,6 @@ class RoadmapService:
 
         return phases
 
-    # =========================================================
-    # NORMALIZE AI PHASE
-    # =========================================================
 
     @staticmethod
     def normalize_phase(
@@ -682,9 +662,6 @@ class RoadmapService:
                 False
         }
 
-    # =========================================================
-    # APPLY PREREQUISITE LOCKING
-    # =========================================================
 
     @staticmethod
     def apply_phase_statuses(
@@ -716,9 +693,6 @@ class RoadmapService:
 
         return phases
 
-    # =========================================================
-    # GENERATE ROADMAP
-    # =========================================================
 
     @staticmethod
     def generate(
@@ -738,9 +712,6 @@ class RoadmapService:
 
             db = get_db()
 
-            # =================================================
-            # GET REAL USER PROFILE
-            # =================================================
 
             user = (
                 UserService.get_profile(
@@ -815,9 +786,6 @@ class RoadmapService:
 
                 weekly_hours = 5
 
-            # =================================================
-            # CURRENT SKILLS
-            # =================================================
 
             current_skills = (
                 RoadmapService
@@ -829,10 +797,6 @@ class RoadmapService:
                 )
             )
 
-            # =================================================
-            # STEP 2:
-            # SKILL GAP ANALYSIS
-            # =================================================
 
             skill_analysis = (
                 SkillService
@@ -876,10 +840,6 @@ class RoadmapService:
                 )
             )
 
-            # =================================================
-            # STEP 3:
-            # PERSONALIZED RECOMMENDATIONS
-            # =================================================
 
             recommendation_result = (
                 RecommendationService
@@ -905,9 +865,6 @@ class RoadmapService:
                     )
                 )
 
-            # =================================================
-            # AI CONTEXT
-            # =================================================
 
             ai_context = {
 
@@ -942,9 +899,6 @@ class RoadmapService:
                     recommendations
             }
 
-            # =================================================
-            # GENERATE AI ROADMAP
-            # =================================================
 
             phases = []
 
@@ -977,9 +931,6 @@ class RoadmapService:
 
                 phases = []
 
-            # =================================================
-            # SAFE FALLBACK
-            # =================================================
 
             if not phases:
 
@@ -998,9 +949,6 @@ class RoadmapService:
                     "Unable to generate roadmap"
                 )
 
-            # =================================================
-            # NORMALIZE + ENRICH PHASES
-            # =================================================
 
             final_phases = []
 
@@ -1018,7 +966,6 @@ class RoadmapService:
                     )
                 )
 
-                # MongoDB course
                 matched_course = (
                     RoadmapService
                     .match_course(
@@ -1027,7 +974,6 @@ class RoadmapService:
                     )
                 )
 
-                # YouTube resource
                 youtube = (
                     RoadmapService
                     .find_youtube_playlist(
@@ -1047,9 +993,6 @@ class RoadmapService:
                     phase
                 )
 
-            # =================================================
-            # LOCK FUTURE PHASES
-            # =================================================
 
             final_phases = (
                 RoadmapService
@@ -1058,9 +1001,6 @@ class RoadmapService:
                 )
             )
 
-            # =================================================
-            # TOTAL ESTIMATED WEEKS
-            # =================================================
 
             total_weeks = sum(
 
@@ -1078,9 +1018,6 @@ class RoadmapService:
 
             now = datetime.utcnow()
 
-            # =================================================
-            # VERSION
-            # =================================================
 
             existing = (
                 RoadmapModel
@@ -1110,9 +1047,6 @@ class RoadmapService:
                     )
                 )
 
-            # =================================================
-            # ROADMAP DOCUMENT
-            # =================================================
 
             document = {
 
@@ -1178,18 +1112,12 @@ class RoadmapService:
                     now
             }
 
-            # =================================================
-            # SAVE
-            # =================================================
 
             RoadmapModel.upsert(
                 user_id,
                 document
             )
 
-            # =================================================
-            # RESPONSE
-            # =================================================
 
             response = dict(
                 document
@@ -1236,9 +1164,6 @@ class RoadmapService:
                 str(error)
             )
 
-    # =========================================================
-    # GET ROADMAP
-    # =========================================================
 
     @staticmethod
     def get(

@@ -7,9 +7,6 @@ class CourseModel:
 
     collection = get_db()["courses"]
 
-    # =========================
-    # GET ALL
-    # =========================
 
     @staticmethod
     def get_all():
@@ -17,9 +14,6 @@ class CourseModel:
             CourseModel.collection.find({})
         )
 
-    # =========================
-    # GET ONE
-    # =========================
 
     @staticmethod
     def get_by_id(course_id):
@@ -32,9 +26,6 @@ class CourseModel:
         except Exception:
             return None
 
-    # =========================
-    # CREATE
-    # =========================
 
     @staticmethod
     def create(course_data):
@@ -47,9 +38,6 @@ class CourseModel:
 
         return course_data
 
-    # =========================
-    # UPDATE
-    # =========================
 
     @staticmethod
     def update(course_id, course_data):
@@ -70,9 +58,6 @@ class CourseModel:
         except Exception:
             return False
 
-    # =========================
-    # DELETE
-    # =========================
 
     @staticmethod
     def delete(course_id):
@@ -88,9 +73,6 @@ class CourseModel:
         except Exception:
             return False
 
-    # =========================
-    # FIND COURSES FOR ROADMAP
-    # =========================
 
     @staticmethod
     def find_matching_courses(keywords):

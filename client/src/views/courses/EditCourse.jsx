@@ -160,7 +160,6 @@ const EditCourse = () => {
             className="mt-8 space-y-5"
           >
 
-            {/* TITLE */}
             <div>
               <label className="mb-2 block font-semibold text-slate-700">
                 Course Title
@@ -174,7 +173,6 @@ const EditCourse = () => {
               />
             </div>
 
-            {/* DESCRIPTION */}
             <div>
               <label className="mb-2 block font-semibold text-slate-700">
                 Description
@@ -189,7 +187,6 @@ const EditCourse = () => {
               />
             </div>
 
-            {/* SKILLS */}
             <div>
               <label className="mb-2 block font-semibold text-slate-700">
                 Skills
@@ -208,7 +205,6 @@ const EditCourse = () => {
               </p>
             </div>
 
-            {/* TOPICS */}
             <div>
               <label className="mb-2 block font-semibold text-slate-700">
                 Topics
@@ -227,7 +223,6 @@ const EditCourse = () => {
               </p>
             </div>
 
-            {/* LEVEL + DURATION */}
             <div className="grid gap-5 md:grid-cols-2">
 
               <div>

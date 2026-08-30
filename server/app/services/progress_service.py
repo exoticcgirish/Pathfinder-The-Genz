@@ -191,9 +191,6 @@ class ProgressService:
         phase_number
     ):
 
-        # =========================================
-        # GET ROADMAP
-        # =========================================
 
         roadmap = RoadmapModel.get_by_user(
             user_id
@@ -210,9 +207,6 @@ class ProgressService:
         if not phases:
             return None, "Roadmap has no phases"
 
-        # =========================================
-        # FIND TARGET PHASE
-        # =========================================
 
         target_phase = None
 
@@ -234,9 +228,6 @@ class ProgressService:
         if not target_phase:
             return None, "Roadmap phase not found"
 
-        # =========================================
-        # VALIDATE PHASE STATE
-        # =========================================
 
         if target_phase.get("status") == "locked":
             return None, "This phase is still locked"
@@ -247,9 +238,6 @@ class ProgressService:
         ):
             return None, "This phase is already completed"
 
-        # =========================================
-        # COMPLETE PHASE
-        # =========================================
 
         target_phase["completed"] = True
         target_phase["status"] = "completed"
@@ -262,9 +250,6 @@ class ProgressService:
             or []
         )
 
-        # =========================================
-        # UNLOCK NEXT PHASE
-        # =========================================
 
         next_phase_number = (
             int(phase_number) + 1
@@ -288,9 +273,6 @@ class ProgressService:
             ):
                 phase["status"] = "available"
 
-        # =========================================
-        # ROADMAP PROGRESS
-        # =========================================
 
         completed_count = sum(
             1
@@ -320,9 +302,6 @@ class ProgressService:
             "progressPercentage"
         ] = progress_percentage
 
-        # =========================================
-        # SAVE PHASE PROGRESS
-        # =========================================
 
         ProgressModel.upsert_phase_progress(
             user_id,
@@ -331,9 +310,6 @@ class ProgressService:
             "completed"
         )
 
-        # =========================================
-        # GET USER
-        # =========================================
 
         user = UserModel.find_by_id(
             user_id
@@ -347,9 +323,6 @@ class ProgressService:
             []
         )
 
-        # =========================================
-        # UPDATE LEARNER SKILLS
-        # =========================================
 
         updated_skills = (
             ProgressService
@@ -364,9 +337,6 @@ class ProgressService:
             updated_skills
         )
 
-        # =========================================
-        # PROFILE DATA
-        # =========================================
 
         profile = user.get(
             "profile",
@@ -393,9 +363,6 @@ class ProgressService:
                 "Career goal is missing from user profile"
             )
 
-        # =========================================
-        # RECALCULATE SKILL GAP
-        # =========================================
 
         skill_gap = (
             SkillService
@@ -415,9 +382,6 @@ class ProgressService:
                 "Unable to recalculate skill gap"
             )
 
-        # =========================================
-        # SYNC ADAPTIVE STATE INTO ROADMAP
-        # =========================================
 
         readiness_score = skill_gap.get(
             "readinessScore",
@@ -459,18 +423,12 @@ class ProgressService:
             "updatedAt"
         ] = datetime.utcnow()
 
-        # =========================================
-        # SAVE ROADMAP AFTER ALL RECALCULATIONS
-        # =========================================
 
         RoadmapModel.update(
             user_id,
             roadmap
         )
 
-        # =========================================
-        # NEXT AVAILABLE PHASE
-        # =========================================
 
         next_phase = next(
             (
@@ -498,9 +456,6 @@ class ProgressService:
             None
         )
 
-        # =========================================
-        # RESPONSE
-        # =========================================
 
         return {
             "phaseCompleted": int(

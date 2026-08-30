@@ -10,9 +10,6 @@ from app.services.user_service import UserService
 
 class UserController:
 
-    # =========================
-    # GET PROFILE
-    # =========================
 
     @staticmethod
     @jwt_required()
@@ -34,9 +31,6 @@ class UserController:
         }), 200
 
 
-    # =========================
-    # UPDATE PROFILE
-    # =========================
 
     @staticmethod
     @jwt_required()
@@ -68,9 +62,6 @@ class UserController:
             0
         )
 
-        # =========================
-        # VALIDATION
-        # =========================
 
         if not career_goal:
             return jsonify({
@@ -136,9 +127,6 @@ class UserController:
                 "message": "Invalid weekly learning hours"
             }), 400
 
-        # =========================
-        # BUILD PROFILE
-        # =========================
 
         profile = {
             "careerGoal": career_goal,
@@ -156,9 +144,6 @@ class UserController:
                 weekly_hours
         }
 
-        # =========================
-        # UPDATE DATABASE
-        # =========================
 
         user = UserService.update_profile(
             user_id,

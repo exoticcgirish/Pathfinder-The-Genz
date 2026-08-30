@@ -3,11 +3,6 @@ from app.models.course_model import CourseModel
 
 class SkillService:
 
-    # =====================================================
-    # CAREER SKILL MAP
-    # Baseline requirements for common career goals.
-    # Course catalog skills are also considered dynamically.
-    # =====================================================
 
     CAREER_SKILL_MAP = {
 
@@ -122,10 +117,6 @@ class SkillService:
         ]
     }
 
-    # =====================================================
-    # SKILL PREREQUISITES
-    # Used later by the roadmap generator as well.
-    # =====================================================
 
     PREREQUISITES = {
 
@@ -177,18 +168,12 @@ class SkillService:
         ]
     }
 
-    # =====================================================
-    # NORMALIZE
-    # =====================================================
 
     @staticmethod
     def normalize(value):
 
         return str(value or "").strip().lower()
 
-    # =====================================================
-    # GET ALL COURSE SKILLS
-    # =====================================================
 
     @staticmethod
     def get_all_skills():
@@ -213,9 +198,6 @@ class SkillService:
             key=str.lower
         )
 
-    # =====================================================
-    # FIND CAREER SKILLS
-    # =====================================================
 
     @staticmethod
     def get_required_skills(career_goal):
@@ -227,15 +209,12 @@ class SkillService:
         if not normalized_goal:
             return []
 
-        # Exact career match
         if normalized_goal in SkillService.CAREER_SKILL_MAP:
 
             return SkillService.CAREER_SKILL_MAP[
                 normalized_goal
             ]
 
-        # Flexible match:
-        # "I want to become a Java backend developer"
         for career, skills in (
             SkillService.CAREER_SKILL_MAP.items()
         ):
@@ -246,7 +225,6 @@ class SkillService:
             ):
                 return skills
 
-        # Keyword fallback
         keyword_mapping = [
             (
                 ["java", "backend"],
@@ -298,9 +276,6 @@ class SkillService:
 
         return []
 
-    # =====================================================
-    # SKILL EXISTS
-    # =====================================================
 
     @staticmethod
     def has_skill(
@@ -332,9 +307,6 @@ class SkillService:
 
         return False
 
-    # =====================================================
-    # CURRENT SKILL NAMES
-    # =====================================================
 
     @staticmethod
     def extract_skill_names(skills):
@@ -361,9 +333,6 @@ class SkillService:
 
         return result
 
-    # =====================================================
-    # DETERMINE PRIORITY
-    # =====================================================
 
     @staticmethod
     def get_priority(
@@ -383,7 +352,6 @@ class SkillService:
             for item in missing_skills
         }
 
-        # Foundation skills should come first.
         foundation = {
             "programming",
             "java",
@@ -400,8 +368,6 @@ class SkillService:
         if SkillService.normalize(skill) in foundation:
             return "high"
 
-        # If a skill is a prerequisite of another missing skill,
-        # it becomes high priority.
         for target_skill in missing_skills:
 
             target_prerequisites = (
@@ -432,9 +398,6 @@ class SkillService:
 
         return "medium"
 
-    # =====================================================
-    # SKILL GAP ANALYSIS
-    # =====================================================
 
     @staticmethod
     def analyze_skill_gap(
@@ -455,7 +418,6 @@ class SkillService:
             )
         )
 
-        # Career is not yet in our deterministic map.
         if not required_skills:
 
             return {

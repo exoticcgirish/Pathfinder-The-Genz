@@ -5,17 +5,11 @@ from app.services.skill_service import SkillService
 
 class RecommendationService:
 
-    # =====================================================
-    # NORMALIZE TEXT
-    # =====================================================
 
     @staticmethod
     def normalize(value):
         return str(value or "").strip().lower()
 
-    # =====================================================
-    # GET COURSE SKILLS
-    # =====================================================
 
     @staticmethod
     def get_course_skills(course):
@@ -31,9 +25,6 @@ class RecommendationService:
             if str(skill).strip()
         ]
 
-    # =====================================================
-    # GET COURSE TOPICS
-    # =====================================================
 
     @staticmethod
     def get_course_topics(course):
@@ -49,11 +40,6 @@ class RecommendationService:
             if str(topic).strip()
         ]
 
-    # =====================================================
-    # DIFFICULTY MATCH
-    #
-    # Maximum = 10 points
-    # =====================================================
 
     @staticmethod
     def difficulty_score(
@@ -104,19 +90,6 @@ class RecommendationService:
 
         return 1
 
-    # =====================================================
-    # SCORE ONE COURSE
-    #
-    # WEIGHTS
-    #
-    # 60% Skill-gap relevance
-    # 15% Career-goal relevance
-    # 10% Experience match
-    # 10% Interest match
-    #  5% Existing-skill continuity
-    #
-    # TOTAL = 100
-    # =====================================================
 
     @staticmethod
     def score_course(
@@ -219,10 +192,6 @@ class RecommendationService:
 
         reasons = []
 
-        # =================================================
-        # 1. SKILL GAP RELEVANCE
-        # MAX = 60
-        # =================================================
 
         for missing_skill in missing_skills:
 
@@ -272,10 +241,6 @@ class RecommendationService:
                 )
             )
 
-        # =================================================
-        # 2. CAREER GOAL RELEVANCE
-        # MAX = 15
-        # =================================================
 
         goal_words = [
             word
@@ -320,10 +285,6 @@ class RecommendationService:
                 "Relevant to your career goal"
             )
 
-        # =================================================
-        # 3. EXPERIENCE LEVEL MATCH
-        # MAX = 10
-        # =================================================
 
         course_level = (
             course.get(
@@ -351,10 +312,6 @@ class RecommendationService:
                 "Matches your experience level"
             )
 
-        # =================================================
-        # 4. INTEREST MATCH
-        # MAX = 10
-        # =================================================
 
         for interest in interests:
 
@@ -393,10 +350,6 @@ class RecommendationService:
                 "Matches your learning interests"
             )
 
-        # =================================================
-        # 5. CURRENT SKILL CONTINUITY
-        # MAX = 5
-        # =================================================
 
         current_normalized = {
             RecommendationService.normalize(
@@ -418,9 +371,6 @@ class RecommendationService:
                 "Builds on skills you already know"
             )
 
-        # =================================================
-        # RETURN COURSE SCORE
-        # =================================================
 
         return {
 
@@ -439,9 +389,6 @@ class RecommendationService:
                 reasons
         }
 
-    # =====================================================
-    # SERIALIZE COURSE
-    # =====================================================
 
     @staticmethod
     def serialize_course(
@@ -524,9 +471,6 @@ class RecommendationService:
                 ]
         }
 
-    # =====================================================
-    # PERSONALIZED RECOMMENDATIONS
-    # =====================================================
 
     @staticmethod
     def get_recommendations(
@@ -534,9 +478,6 @@ class RecommendationService:
         top_n=5
     ):
 
-        # =================================================
-        # GET USER
-        # =================================================
 
         user = (
             UserService.get_profile(
@@ -547,9 +488,6 @@ class RecommendationService:
         if not user:
             return None
 
-        # =================================================
-        # GET PROFILE
-        # =================================================
 
         profile = user.get(
             "profile",
@@ -568,9 +506,6 @@ class RecommendationService:
                     "Complete your career goal first."
             }
 
-        # =================================================
-        # RUN SKILL GAP ANALYSIS
-        # =================================================
 
         analysis = (
             SkillService
@@ -600,9 +535,6 @@ class RecommendationService:
                     analysis
             }
 
-        # =================================================
-        # LOAD COURSES
-        # =================================================
 
         courses = (
             CourseModel.get_all()
@@ -610,9 +542,6 @@ class RecommendationService:
 
         scored_courses = []
 
-        # =================================================
-        # SCORE COURSES
-        # =================================================
 
         for course in courses:
 
@@ -625,19 +554,12 @@ class RecommendationService:
                 )
             )
 
-            # =============================================
-            # IMPORTANT FILTER
-            #
-            # Course MUST help close at least one
-            # actual career skill gap.
-            # =============================================
 
             if not scoring[
                 "matchedGapSkills"
             ]:
                 continue
 
-            # Ignore very weak recommendations
             if scoring["score"] < 20:
                 continue
 
@@ -650,9 +572,6 @@ class RecommendationService:
                 )
             )
 
-        # =================================================
-        # SORT BY MATCH SCORE
-        # =================================================
 
         scored_courses.sort(
             key=lambda item:
@@ -668,9 +587,6 @@ class RecommendationService:
             ]
         )
 
-        # =================================================
-        # NEXT BEST ACTION
-        # =================================================
 
         next_best_action = None
 
@@ -717,9 +633,6 @@ class RecommendationService:
                     )
             }
 
-        # =================================================
-        # FINAL RESULT
-        # =================================================
 
         return {
 

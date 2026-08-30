@@ -39,7 +39,6 @@ def find_playlist(query):
         if not items:
             return None
 
-        # Find first valid playlist
         for item in items:
 
             playlist_id = (

@@ -5,9 +5,6 @@ from app.services.auth_service import AuthService
 
 class AuthController:
 
-    # =========================
-    # REGISTER
-    # =========================
 
     @staticmethod
     def register():
@@ -18,7 +15,6 @@ class AuthController:
         email = data.get("email")
         password = data.get("password")
 
-        # Default role
         role = data.get("role", "learner")
 
         if not name or not email or not password:
@@ -35,7 +31,6 @@ class AuthController:
                 "message": "Password must contain at least 6 characters"
             }), 400
 
-        # Public registration can only create these roles
         if role not in ["learner", "content_manager"]:
 
             return jsonify({
@@ -57,7 +52,6 @@ class AuthController:
                 "message": error
             }), 400
 
-        # Convert MongoDB ObjectId to string
         if user and "_id" in user:
             user["_id"] = str(user["_id"])
 
@@ -67,9 +61,6 @@ class AuthController:
             "user": user
         }), 201
 
-    # =========================
-    # LOGIN
-    # =========================
 
     @staticmethod
     def login():
@@ -100,7 +91,6 @@ class AuthController:
 
         user = result["user"]
 
-        # Convert MongoDB ObjectId to string
         if user and "_id" in user:
             user["_id"] = str(user["_id"])
 

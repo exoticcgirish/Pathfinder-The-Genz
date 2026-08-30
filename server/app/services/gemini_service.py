@@ -4,9 +4,6 @@ import json
 from google import genai
 
 
-# =========================================================
-# GEMINI CLIENT
-# =========================================================
 
 client = genai.Client(
     api_key=os.getenv(
@@ -15,9 +12,6 @@ client = genai.Client(
 )
 
 
-# =========================================================
-# SAFE JSON EXTRACTION
-# =========================================================
 
 def _clean_json_text(text):
 
@@ -68,9 +62,6 @@ def _clean_json_text(text):
     return text
 
 
-# =========================================================
-# GENERATE ROADMAP
-# =========================================================
 
 def generate_roadmap(
     profile
@@ -149,9 +140,6 @@ def generate_roadmap(
         )
     )
 
-    # =====================================================
-    # PRIORITY SKILL TEXT
-    # =====================================================
 
     priority_text = []
 
@@ -197,9 +185,6 @@ def generate_roadmap(
                     []
             })
 
-    # =====================================================
-    # RECOMMENDED COURSE SUMMARY
-    # =====================================================
 
     course_summary = []
 
@@ -235,9 +220,6 @@ def generate_roadmap(
                 )
         })
 
-    # =====================================================
-    # PROMPT
-    # =====================================================
 
     prompt = f"""
 You are an expert AI learning-path architect.
@@ -674,9 +656,6 @@ Return exactly this structure:
 }}
 """
 
-    # =====================================================
-    # GEMINI REQUEST
-    # =====================================================
 
     response = (
         client.models.generate_content(
@@ -695,9 +674,6 @@ Return exactly this structure:
         text
     )
 
-    # =====================================================
-    # PARSE JSON
-    # =====================================================
 
     try:
 
@@ -720,9 +696,6 @@ Return exactly this structure:
             + str(error)
         )
 
-    # =====================================================
-    # BASIC RESPONSE VALIDATION
-    # =====================================================
 
     if not isinstance(
         data,
@@ -754,9 +727,6 @@ Return exactly this structure:
             "Gemini generated no roadmap phases"
         )
 
-    # =====================================================
-    # VALIDATE + CLEAN EVERY PHASE
-    # =====================================================
 
     cleaned_phases = []
 
@@ -890,9 +860,6 @@ Return exactly this structure:
             )
         ).strip()
 
-        # ===============================================
-        # SAFE NON-EMPTY FALLBACKS
-        # ===============================================
 
         if not description:
 
@@ -997,9 +964,6 @@ Return exactly this structure:
                 youtube_search_query
         })
 
-    # =====================================================
-    # FINAL VALIDATION
-    # =====================================================
 
     if not cleaned_phases:
 

@@ -12,9 +12,6 @@ recommendation_bp = Blueprint(
 )
 
 
-# =====================================================
-# GET PERSONALIZED RECOMMENDATIONS
-# =====================================================
 
 @recommendation_bp.route(
     "/",
@@ -28,9 +25,6 @@ def get_recommendations():
     )
 
 
-# =====================================================
-# ANALYZE LEARNER + GENERATE RECOMMENDATIONS
-# =====================================================
 
 @recommendation_bp.route(
     "/analyze",

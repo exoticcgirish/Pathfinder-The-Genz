@@ -30,7 +30,6 @@ const AppRoutes = () => {
   return (
     <Routes>
 
-      {/* DEFAULT */}
       <Route
         path="/"
         element={
@@ -41,7 +40,6 @@ const AppRoutes = () => {
         }
       />
 
-      {/* AUTH */}
       <Route
         path="/login"
         element={<Login />}
@@ -52,7 +50,6 @@ const AppRoutes = () => {
         element={<Register />}
       />
 
-      {/* ADMIN */}
       <Route
         path="/admin"
         element={
@@ -64,7 +61,6 @@ const AppRoutes = () => {
         }
       />
 
-      {/* CONTENT MANAGER */}
       <Route
         path="/content-manager"
         element={
@@ -93,7 +89,6 @@ const AppRoutes = () => {
         }
       />
 
-      {/* AUTHENTICATED LEARNER AREA */}
       <Route element={<ProtectedRoute />}>
         <Route element={<LearnerLayout />}>
 
@@ -140,7 +135,6 @@ const AppRoutes = () => {
         </Route>
       </Route>
 
-      {/* INVALID URL */}
       <Route
         path="*"
         element={

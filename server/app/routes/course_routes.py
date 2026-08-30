@@ -9,9 +9,6 @@ course_bp = Blueprint(
 )
 
 
-# =========================
-# GET COURSES
-# =========================
 
 @course_bp.route(
     "",
@@ -22,9 +19,6 @@ def get_courses():
     return CourseController.get_all()
 
 
-# =========================
-# GET ONE COURSE
-# =========================
 
 @course_bp.route(
     "/<course_id>",
@@ -37,10 +31,6 @@ def get_course(course_id):
     )
 
 
-# =========================
-# CREATE COURSE
-# ADMIN + CONTENT MANAGER
-# =========================
 
 @course_bp.route(
     "",
@@ -51,10 +41,6 @@ def create_course():
     return CourseController.create()
 
 
-# =========================
-# UPDATE COURSE
-# ADMIN + CONTENT MANAGER
-# =========================
 
 @course_bp.route(
     "/<course_id>",
@@ -67,10 +53,6 @@ def update_course(course_id):
     )
 
 
-# =========================
-# DELETE COURSE
-# ADMIN + CONTENT MANAGER
-# =========================
 
 @course_bp.route(
     "/<course_id>",

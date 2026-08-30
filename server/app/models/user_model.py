@@ -8,9 +8,6 @@ class UserModel:
 
     collection = get_db()["users"]
 
-    # =========================
-    # CREATE
-    # =========================
     @staticmethod
     def create(user_data):
 
@@ -22,9 +19,6 @@ class UserModel:
 
         return user_data
 
-    # =========================
-    # FIND BY EMAIL
-    # =========================
     @staticmethod
     def find_by_email(email):
 
@@ -35,9 +29,6 @@ class UserModel:
             "email": email.strip().lower()
         })
 
-    # =========================
-    # FIND BY ID
-    # =========================
     @staticmethod
     def find_by_id(user_id):
 
@@ -56,9 +47,6 @@ class UserModel:
 
             return None
 
-    # =========================
-    # UPDATE PROFILE
-    # =========================
     @staticmethod
     def update_profile(
         user_id,
@@ -94,10 +82,6 @@ class UserModel:
 
             return False
 
-    # =========================
-    # UPDATE SKILLS
-    # Future Step 2 use
-    # =========================
     @staticmethod
     def update_skills(
         user_id,

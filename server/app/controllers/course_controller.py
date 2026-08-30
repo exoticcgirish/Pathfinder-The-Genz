@@ -9,10 +9,6 @@ from app.middleware.rbac import role_required
 
 class CourseController:
 
-    # =========================
-    # GET ALL
-    # PUBLIC
-    # =========================
 
     @staticmethod
     def get_all():
@@ -24,10 +20,6 @@ class CourseController:
             "courses": courses
         }), 200
 
-    # =========================
-    # GET ONE
-    # PUBLIC
-    # =========================
 
     @staticmethod
     def get_one(course_id):
@@ -48,10 +40,6 @@ class CourseController:
             "course": course
         }), 200
 
-    # =========================
-    # CREATE
-    # ADMIN + CONTENT MANAGER
-    # =========================
 
     @staticmethod
     @role_required(
@@ -82,10 +70,6 @@ class CourseController:
             "course": course
         }), 201
 
-    # =========================
-    # UPDATE
-    # ADMIN + CONTENT MANAGER
-    # =========================
 
     @staticmethod
     @role_required(
@@ -114,10 +98,6 @@ class CourseController:
             "course": course
         }), 200
 
-    # =========================
-    # DELETE
-    # ADMIN + CONTENT MANAGER
-    # =========================
 
     @staticmethod
     @role_required(

@@ -10,9 +10,6 @@ class RecommendationEngine:
         if not courses:
             return []
 
-        # -----------------------------
-        # Build learner text
-        # -----------------------------
 
         interests = user_profile.get("interests", [])
 
@@ -23,9 +20,6 @@ class RecommendationEngine:
             " ".join(interests)
         ])
 
-        # -----------------------------
-        # Build course text
-        # -----------------------------
 
         course_texts = []
 
@@ -40,9 +34,6 @@ class RecommendationEngine:
 
             course_texts.append(text)
 
-        # -----------------------------
-        # TF-IDF
-        # -----------------------------
 
         documents = [learner_text] + course_texts
 
@@ -57,18 +48,12 @@ class RecommendationEngine:
         user_vector = matrix[0]
         course_vectors = matrix[1:]
 
-        # -----------------------------
-        # Similarity
-        # -----------------------------
 
         scores = linear_kernel(
             user_vector,
             course_vectors
         ).flatten()
 
-        # -----------------------------
-        # Attach scores
-        # -----------------------------
 
         results = []
 
@@ -85,9 +70,6 @@ class RecommendationEngine:
 
             results.append(course_copy)
 
-        # -----------------------------
-        # Sort highest score first
-        # -----------------------------
 
         results.sort(
             key=lambda x: x["score"],

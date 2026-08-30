@@ -9,9 +9,6 @@ skill_bp = Blueprint(
 )
 
 
-# ==========================================
-# GET AVAILABLE SKILLS
-# ==========================================
 
 @skill_bp.route(
     "/",
@@ -22,9 +19,6 @@ def get_skills():
     return SkillController.get_skills()
 
 
-# ==========================================
-# SKILL GAP ANALYSIS
-# ==========================================
 
 @skill_bp.route(
     "/analyze",
@@ -35,9 +29,6 @@ def analyze_skills():
     return SkillController.analyze()
 
 
-# ==========================================
-# UPDATE CURRENT USER SKILLS
-# ==========================================
 
 @skill_bp.route(
     "/my-skills",

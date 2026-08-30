@@ -32,9 +32,6 @@ const Progress = () => {
   const [mentorLoading, setMentorLoading] = useState(false);
 
 
-  // =====================================================
-  // NORMALIZE ROADMAP RESPONSE
-  // =====================================================
 
   const extractRoadmap = (response) => {
     const data = response?.data;
@@ -52,9 +49,6 @@ const Progress = () => {
   };
 
 
-  // =====================================================
-  // LOAD DASHBOARD DATA
-  // =====================================================
 
   const loadData = async () => {
     try {
@@ -126,9 +120,6 @@ const Progress = () => {
   }, []);
 
 
-  // =====================================================
-  // ROADMAP DERIVED DATA
-  // =====================================================
 
   const phases = useMemo(() => {
     return Array.isArray(roadmap?.phases)
@@ -186,14 +177,11 @@ const Progress = () => {
 
 
 
-  // =====================================================
-  // CONTINUE LEARNING
-  // =====================================================
 
   const handleContinueLearning = (phase) => {
     if (!phase) return;
 
-    // 1. Prefer a real matched Pathfinder course.
+    
     const courseId =
       phase?.recommendedCourse?.id ||
       phase?.recommendedCourse?._id ||
@@ -204,8 +192,8 @@ const Progress = () => {
       return;
     }
 
-    // 2. Otherwise use a real learning resource attached
-    //    to the roadmap phase.
+    
+    
     const directResourceUrl =
       phase?.youtube?.url ||
       phase?.youtubeResource?.url ||
@@ -225,9 +213,9 @@ const Progress = () => {
       return;
     }
 
-    // 3. If the backend only supplied a YouTube search query,
-    //    open that targeted search instead of the generic
-    //    course catalogue.
+    
+    
+    
     const youtubeSearchQuery =
       phase?.youtubeSearchQuery ||
       phase?.youtube?.searchQuery ||
@@ -236,7 +224,7 @@ const Progress = () => {
 
     if (youtubeSearchQuery) {
       const searchUrl =
-        `https://www.youtube.com/results?search_query=${encodeURIComponent(
+        `https:
           youtubeSearchQuery
         )}`;
 
@@ -248,15 +236,12 @@ const Progress = () => {
       return;
     }
 
-    // 4. Last fallback: keep the learner in their personalized
-    //    path instead of showing unrelated generic courses.
+    
+    
     navigate("/roadmap");
   };
 
 
-  // =====================================================
-  // COMPLETE PHASE
-  // =====================================================
 
   const handleCompletePhase = async (
     phaseNumber
@@ -316,9 +301,6 @@ const Progress = () => {
   };
 
 
-  // =====================================================
-  // AI MENTOR
-  // =====================================================
 
   const handleAskMentor = async (
     customMessage
@@ -367,9 +349,6 @@ const Progress = () => {
   };
 
 
-  // =====================================================
-  // HELPERS
-  // =====================================================
 
   const getPriorityClass = (
     priority
@@ -410,9 +389,6 @@ const Progress = () => {
   };
 
 
-  // =====================================================
-  // LOADING
-  // =====================================================
 
   if (loading) {
     return (
@@ -433,14 +409,10 @@ const Progress = () => {
   }
 
 
-  // =====================================================
-  // PAGE
-  // =====================================================
 
   return (
     <div className="progress-page">
 
-      {/* HEADER */}
 
       <header className="progress-header">
 
@@ -487,7 +459,6 @@ const Progress = () => {
       </header>
 
 
-      {/* ALERTS */}
 
       {error && (
         <div className="alert alert-error">
@@ -502,7 +473,6 @@ const Progress = () => {
       )}
 
 
-      {/* STATS */}
 
       <section className="stats-grid">
 
@@ -615,7 +585,6 @@ const Progress = () => {
       </section>
 
 
-      {/* CURRENT PHASE */}
 
       {currentPhase ? (
 
@@ -786,11 +755,9 @@ const Progress = () => {
       )}
 
 
-      {/* MIDDLE GRID */}
 
       <section className="content-grid">
 
-        {/* SKILL GAPS */}
 
         <article className="panel">
 
@@ -899,7 +866,6 @@ const Progress = () => {
         </article>
 
 
-        {/* AI MENTOR */}
 
         <article className="panel mentor-panel">
 
@@ -1034,7 +1000,6 @@ const Progress = () => {
       </section>
 
 
-      {/* ROADMAP TIMELINE */}
 
       <section className="roadmap-section">
 
@@ -1178,7 +1143,6 @@ const Progress = () => {
       </section>
 
 
-      {/* PROGRESS RECORD COUNT */}
 
       <div className="progress-footer">
 

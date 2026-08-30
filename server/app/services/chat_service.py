@@ -11,9 +11,6 @@ from app.ai.llm.llm_client import (
 
 class ChatService:
 
-    # =====================================================
-    # HELPERS
-    # =====================================================
 
     @staticmethod
     def _extract_skill_names(
@@ -68,7 +65,6 @@ class ChatService:
             []
         )
 
-        # First available, incomplete phase
         for phase in phases:
 
             if (
@@ -83,7 +79,6 @@ class ChatService:
             ):
                 return phase
 
-        # Fallback to first incomplete unlocked phase
         for phase in phases:
 
             if (
@@ -342,9 +337,6 @@ class ChatService:
 
         return context
 
-    # =====================================================
-    # CONVERSATION HISTORY
-    # =====================================================
 
     @staticmethod
     def _format_history(
@@ -388,9 +380,6 @@ class ChatService:
             history
         )
 
-    # =====================================================
-    # PROMPT
-    # =====================================================
 
     @staticmethod
     def _build_prompt(
@@ -612,9 +601,6 @@ Speak naturally as their personalized AI mentor.
 
         return prompt
 
-    # =====================================================
-    # SEND MESSAGE
-    # =====================================================
 
     @staticmethod
     def send_message(
@@ -774,9 +760,6 @@ Speak naturally as their personalized AI mentor.
             None
         )
 
-    # =====================================================
-    # GET CHAT HISTORY
-    # =====================================================
 
     @staticmethod
     def get_history(
@@ -790,9 +773,6 @@ Speak naturally as their personalized AI mentor.
             )
         )
 
-    # =====================================================
-    # CLEAR CHAT HISTORY
-    # =====================================================
 
     @staticmethod
     def clear_history(

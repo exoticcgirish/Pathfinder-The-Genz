@@ -12,7 +12,6 @@ class Config:
 
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 
-        # Set JWT expiry (12 hours here)
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=12)
 
     DEBUG = os.getenv("FLASK_ENV") == "development"

@@ -52,9 +52,6 @@ const Profile = () => {
   } = useAuth();
 
 
-  // =========================================
-  // FORM STATE
-  // =========================================
 
   const [
     form,
@@ -104,9 +101,6 @@ const Profile = () => {
   ] = useState("");
 
 
-  // =========================================
-  // USER INFO
-  // =========================================
 
   const name =
     user?.name ||
@@ -114,9 +108,6 @@ const Profile = () => {
     "Learner";
 
 
-  // =========================================
-  // LOAD SAVED PROFILE
-  // =========================================
 
   useEffect(() => {
     const profile =
@@ -163,9 +154,6 @@ const Profile = () => {
   }, [user]);
 
 
-  // =========================================
-  // FORM CHANGE
-  // =========================================
 
   const handleChange = (
     event
@@ -195,9 +183,6 @@ const Profile = () => {
   };
 
 
-  // =========================================
-  // ADD INTEREST
-  // =========================================
 
   const addInterest = () => {
 
@@ -241,9 +226,6 @@ const Profile = () => {
   };
 
 
-  // =========================================
-  // REMOVE INTEREST
-  // =========================================
 
   const removeInterest = (
     item
@@ -268,9 +250,6 @@ const Profile = () => {
   };
 
 
-  // =========================================
-  // CHECK PROFILE CHANGES
-  // =========================================
 
   const personalizationChanged =
     useMemo(() => {
@@ -350,9 +329,6 @@ const Profile = () => {
     ]);
 
 
-  // =========================================
-  // PROFILE COMPLETION
-  // =========================================
 
   const profileCompletion =
     useMemo(() => {
@@ -394,9 +370,6 @@ const Profile = () => {
     }, [form]);
 
 
-  // =========================================
-  // SAVE PROFILE
-  // =========================================
 
   const handleSubmit = async (
     event
@@ -410,9 +383,6 @@ const Profile = () => {
     setError("");
 
 
-    // =====================================
-    // VALIDATION
-    // =====================================
 
     if (!form.careerGoal) {
 
@@ -493,9 +463,6 @@ const Profile = () => {
     }
 
 
-    // =====================================
-    // SAVE
-    // =====================================
 
     setLoading(true);
 
@@ -582,16 +549,10 @@ const Profile = () => {
       );
 
 
-      // =====================================
-      // REFRESH AUTH USER
-      // =====================================
 
       await refreshUser();
 
 
-      // =====================================
-      // REGENERATE ROADMAP
-      // =====================================
 
       if (
         shouldRegenerate
@@ -669,18 +630,13 @@ const Profile = () => {
   };
 
 
-  // =========================================
-  // PAGE
-  // =========================================
 
   return (
 
     <div className="min-h-screen bg-[#f5f8fc] text-slate-800">
 
 
-      {/* =====================================
-          HEADER
-      ====================================== */}
+      {}
 
       <header className="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-slate-200 bg-white/95 px-5 pl-20 backdrop-blur md:px-8 lg:pl-8">
 
@@ -746,14 +702,11 @@ const Profile = () => {
       </header>
 
 
-      {/* =====================================
-          CONTENT
-      ====================================== */}
+      {}
 
       <main className="mx-auto max-w-5xl px-5 py-8 md:px-8 lg:px-10">
 
 
-        {/* PAGE TITLE */}
 
         <div className="mb-8 flex items-start gap-4">
 
@@ -794,9 +747,7 @@ const Profile = () => {
         </div>
 
 
-        {/* =====================================
-            PROFILE FORM
-        ====================================== */}
+        {}
 
         <form
           onSubmit={
@@ -806,7 +757,6 @@ const Profile = () => {
         >
 
 
-          {/* SUCCESS */}
 
           {message && (
 
@@ -819,7 +769,6 @@ const Profile = () => {
           )}
 
 
-          {/* WARNING */}
 
           {warning && (
 
@@ -832,7 +781,6 @@ const Profile = () => {
           )}
 
 
-          {/* ERROR */}
 
           {error && (
 
@@ -845,9 +793,7 @@ const Profile = () => {
           )}
 
 
-          {/* =====================================
-              ACCOUNT INFO
-          ====================================== */}
+          {}
 
           <div className="mb-8 rounded-2xl bg-slate-50 p-5">
 
@@ -882,9 +828,7 @@ const Profile = () => {
           </div>
 
 
-          {/* =====================================
-              COMPLETENESS
-          ====================================== */}
+          {}
 
           <div className="mb-8 rounded-2xl border border-indigo-100 bg-indigo-50 p-5">
 
@@ -932,14 +876,11 @@ const Profile = () => {
           </div>
 
 
-          {/* =====================================
-              FIELDS
-          ====================================== */}
+          {}
 
           <div className="grid gap-6 md:grid-cols-2">
 
 
-            {/* CAREER GOAL */}
 
             <div className="md:col-span-2">
 
@@ -1007,7 +948,6 @@ const Profile = () => {
             </div>
 
 
-            {/* EXPERIENCE */}
 
             <div>
 
@@ -1054,7 +994,6 @@ const Profile = () => {
             </div>
 
 
-            {/* LEARNING PREFERENCE */}
 
             <div>
 
@@ -1105,7 +1044,6 @@ const Profile = () => {
             </div>
 
 
-            {/* WEEKLY TIME */}
 
             <div>
 
@@ -1156,7 +1094,6 @@ const Profile = () => {
             </div>
 
 
-            {/* INTERESTS */}
 
             <div className="md:col-span-2">
 
@@ -1286,9 +1223,7 @@ const Profile = () => {
           </div>
 
 
-          {/* =====================================
-              SAVE
-          ====================================== */}
+          {}
 
           <div className="mt-8 flex flex-col-reverse gap-3 border-t border-slate-100 pt-6 sm:flex-row sm:items-center sm:justify-between">
 
@@ -1334,9 +1269,7 @@ const Profile = () => {
         </form>
 
 
-        {/* =====================================
-            HELP
-        ====================================== */}
+        {}
 
         <div className="mt-6 flex items-start gap-4 rounded-2xl border border-indigo-100 bg-indigo-50 p-5">
 

@@ -9,9 +9,6 @@ class RoadmapModel:
         "roadmaps"
     ]
 
-    # =====================================================
-    # CREATE
-    # =====================================================
 
     @staticmethod
     def create(
@@ -32,9 +29,6 @@ class RoadmapModel:
 
         return roadmap
 
-    # =====================================================
-    # GET BY USER
-    # =====================================================
 
     @staticmethod
     def get_by_user(
@@ -68,9 +62,6 @@ class RoadmapModel:
 
             return None
 
-    # =====================================================
-    # UPDATE
-    # =====================================================
 
     @staticmethod
     def update(
@@ -116,9 +107,6 @@ class RoadmapModel:
 
             return False
 
-    # =====================================================
-    # UPSERT
-    # =====================================================
 
     @staticmethod
     def upsert(

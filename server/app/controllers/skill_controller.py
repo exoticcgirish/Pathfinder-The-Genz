@@ -12,9 +12,6 @@ from app.models.user_model import UserModel
 
 class SkillController:
 
-    # =====================================================
-    # GET ALL AVAILABLE SKILLS
-    # =====================================================
 
     @staticmethod
     def get_skills():
@@ -27,9 +24,6 @@ class SkillController:
             "count": len(skills)
         }), 200
 
-    # =====================================================
-    # ANALYZE LOGGED-IN LEARNER
-    # =====================================================
 
     @staticmethod
     @jwt_required()
@@ -103,9 +97,6 @@ class SkillController:
                 analysis
         }), 200
 
-    # =====================================================
-    # UPDATE LEARNER'S CURRENT SKILLS
-    # =====================================================
 
     @staticmethod
     @jwt_required()

@@ -9,7 +9,6 @@ def create_admin():
     email = "admin@pathfinder.com"
     password = "Admin@123"
 
-    # Check if admin already exists
     existing = db.users.find_one({
         "email": email
     })

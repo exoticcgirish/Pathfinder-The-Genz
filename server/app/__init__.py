@@ -9,9 +9,6 @@ def create_app():
 
     app = Flask(__name__)
 
-    # =========================
-    # JWT
-    # =========================
 
     app.config["JWT_SECRET_KEY"] = (
         Config.JWT_SECRET_KEY
@@ -19,9 +16,6 @@ def create_app():
 
     JWTManager(app)
 
-    # =========================
-    # CORS
-    # =========================
 
     CORS(
         app,
@@ -35,9 +29,6 @@ def create_app():
         supports_credentials=True
     )
 
-    # =========================
-    # IMPORT ROUTES
-    # =========================
 
     from app.routes.auth_routes import auth_bp
     from app.routes.user_routes import user_bp
@@ -49,9 +40,6 @@ def create_app():
     from app.routes.progress_routes import progress_bp
     from app.routes.chat_routes import chat_bp
 
-    # =========================
-    # REGISTER BLUEPRINTS
-    # =========================
 
     app.register_blueprint(
         auth_bp,
@@ -93,9 +81,6 @@ def create_app():
         url_prefix="/api/skills"
     )
 
-    # =========================
-    # HOME
-    # =========================
 
     @app.route("/")
     def home():

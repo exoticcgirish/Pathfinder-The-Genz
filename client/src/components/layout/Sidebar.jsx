@@ -116,7 +116,6 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* MOBILE MENU BUTTON */}
       <button
         onClick={() => setSidebarOpen(true)}
         className="fixed left-4 top-4 z-30 flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm lg:hidden"
@@ -125,7 +124,6 @@ const Sidebar = () => {
         <Menu size={21} />
       </button>
 
-      {/* MOBILE OVERLAY */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-30 bg-slate-900/40 lg:hidden"
@@ -148,7 +146,6 @@ const Sidebar = () => {
           }
         `}
       >
-        {/* LOGO */}
         <div className="flex h-24 shrink-0 items-center border-b border-slate-100 px-7">
           <button
             onClick={() => goTo("/dashboard")}
@@ -178,7 +175,6 @@ const Sidebar = () => {
           </button>
         </div>
 
-        {/* NAVIGATION */}
         <nav className="flex-1 overflow-y-auto px-4 py-7">
           <p className="mb-3 px-3 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">
             Main menu
@@ -197,7 +193,6 @@ const Sidebar = () => {
           </div>
         </nav>
 
-        {/* USER */}
         <div className="shrink-0 border-t border-slate-100 p-4">
           <div className="rounded-2xl bg-slate-50 p-4">
             <button

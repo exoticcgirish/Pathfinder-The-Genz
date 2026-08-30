@@ -66,7 +66,6 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-[#f5f8fc]">
 
-      {/* DASHBOARD TOP HEADER */}
       <header className="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-slate-200 bg-white/95 px-5 pl-20 backdrop-blur md:px-8 lg:pl-8">
         <div>
           <p className="text-sm font-medium text-slate-400">
@@ -88,7 +87,6 @@ const Dashboard = () => {
 
       <main className="mx-auto max-w-[1500px] px-5 py-7 md:px-8 lg:px-10">
 
-        {/* WELCOME */}
         <section className="relative overflow-hidden rounded-3xl bg-slate-900 p-7 text-white shadow-xl shadow-slate-200 md:p-9">
 
           <div className="relative z-10 max-w-2xl">
@@ -123,7 +121,6 @@ const Dashboard = () => {
 
         </section>
 
-        {/* STATS */}
         <section className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
           <StatCard
@@ -158,7 +155,6 @@ const Dashboard = () => {
 
         </section>
 
-        {/* CAREER + INTERESTS */}
         <section className="mt-7 grid gap-7 xl:grid-cols-[1.5fr_1fr]">
 
           <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
@@ -286,7 +282,6 @@ const Dashboard = () => {
 
         </section>
 
-        {/* COURSES + SKILLS */}
         <section className="mt-7 grid gap-7 lg:grid-cols-2">
 
           <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
@@ -458,9 +453,7 @@ const Dashboard = () => {
 };
 
 
-/* =========================
-   COMPONENTS
-========================= */
+
 
 const StatCard = ({
   icon: Icon,

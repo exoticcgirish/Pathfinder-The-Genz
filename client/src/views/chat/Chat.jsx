@@ -63,9 +63,6 @@ const Chat = () => {
   ];
 
 
-  // =========================================
-  // DEFAULT WELCOME MESSAGE
-  // =========================================
 
   const welcomeMessage = {
     role: "ai",
@@ -74,9 +71,6 @@ const Chat = () => {
   };
 
 
-  // =========================================
-  // AUTO SCROLL
-  // =========================================
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({
@@ -90,9 +84,6 @@ const Chat = () => {
   }, [messages, loading]);
 
 
-  // =========================================
-  // LOAD CHAT HISTORY
-  // =========================================
 
   useEffect(() => {
     const loadHistory = async () => {
@@ -163,9 +154,6 @@ const Chat = () => {
   }, []);
 
 
-  // =========================================
-  // SEND MESSAGE
-  // =========================================
 
   const sendMessage = async (
     customMessage
@@ -253,9 +241,6 @@ const Chat = () => {
   };
 
 
-  // =========================================
-  // ENTER TO SEND
-  // =========================================
 
   const handleKeyDown = (
     event
@@ -271,9 +256,6 @@ const Chat = () => {
   };
 
 
-  // =========================================
-  // SUGGESTION
-  // =========================================
 
   const useSuggestion = (
     text
@@ -282,9 +264,6 @@ const Chat = () => {
   };
 
 
-  // =========================================
-  // CLEAR HISTORY
-  // =========================================
 
   const handleClearHistory =
     async () => {
@@ -310,9 +289,6 @@ const Chat = () => {
     };
 
 
-  // =========================================
-  // BASIC MARKDOWN-LIKE RENDERER
-  // =========================================
 
   const renderMessage = (
     text
@@ -447,9 +423,7 @@ const Chat = () => {
   return (
     <div className="min-h-screen bg-slate-50">
 
-      {/* =====================================
-          HEADER
-      ====================================== */}
+      {}
 
       <header className="border-b border-slate-200 bg-white">
 
@@ -508,14 +482,11 @@ const Chat = () => {
       </header>
 
 
-      {/* =====================================
-          CHAT
-      ====================================== */}
+      {}
 
       <main className="mx-auto flex min-h-[calc(100vh-81px)] max-w-4xl flex-col px-4 py-6 md:px-6">
 
 
-        {/* ERROR */}
 
         {error && (
 
@@ -528,7 +499,6 @@ const Chat = () => {
         )}
 
 
-        {/* HISTORY LOADING */}
 
         {historyLoading ? (
 
@@ -553,9 +523,7 @@ const Chat = () => {
 
           <>
 
-            {/* =================================
-                MESSAGES
-            ================================== */}
+            {}
 
             <div className="flex-1 space-y-5 overflow-y-auto pb-8">
 
@@ -575,7 +543,6 @@ const Chat = () => {
                     }`}
                   >
 
-                    {/* AI AVATAR */}
 
                     {item.role ===
                       "ai" && (
@@ -591,7 +558,6 @@ const Chat = () => {
                     )}
 
 
-                    {/* MESSAGE */}
 
                     <div
                       className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-6 md:max-w-[78%] ${
@@ -614,7 +580,6 @@ const Chat = () => {
                     </div>
 
 
-                    {/* USER AVATAR */}
 
                     {item.role ===
                       "user" && (
@@ -635,7 +600,6 @@ const Chat = () => {
               )}
 
 
-              {/* AI THINKING */}
 
               {loading && (
 
@@ -679,9 +643,7 @@ const Chat = () => {
             </div>
 
 
-            {/* =================================
-                SUGGESTIONS
-            ================================== */}
+            {}
 
             {messages.length ===
               1 && (
@@ -740,9 +702,7 @@ const Chat = () => {
             )}
 
 
-            {/* =================================
-                INPUT
-            ================================== */}
+            {}
 
             <div className="sticky bottom-0 bg-slate-50 pb-1 pt-2">
 

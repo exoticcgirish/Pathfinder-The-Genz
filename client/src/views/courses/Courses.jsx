@@ -43,9 +43,6 @@ const Courses = () => {
     user?.role === "content_manager" ||
     user?.role === "admin";
 
-  // =====================================
-  // LOAD COURSES
-  // =====================================
 
   const loadCourses = async () => {
     try {
@@ -71,9 +68,6 @@ const Courses = () => {
     loadCourses();
   }, []);
 
-  // =====================================
-  // DELETE COURSE
-  // =====================================
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(
@@ -100,18 +94,12 @@ const Courses = () => {
     }
   };
 
-  // =====================================
-  // LOGOUT
-  // =====================================
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
-  // =====================================
-  // NAVIGATION
-  // =====================================
 
   const navItems = [
     {
@@ -142,9 +130,6 @@ const Courses = () => {
     },
   ];
 
-  // =====================================
-  // LEVELS
-  // =====================================
 
   const levels = useMemo(() => {
     const uniqueLevels = [
@@ -159,9 +144,6 @@ const Courses = () => {
     return ["All", ...uniqueLevels];
   }, [courses]);
 
-  // =====================================
-  // FILTER COURSES
-  // =====================================
 
   const filteredCourses = useMemo(() => {
     const query = searchQuery
@@ -205,18 +187,12 @@ const Courses = () => {
     selectedLevel,
   ]);
 
-  // =====================================
-  // CLEAR FILTERS
-  // =====================================
 
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedLevel("All");
   };
 
-  // =====================================
-  // LOADING
-  // =====================================
 
   if (loading) {
     return (
@@ -234,16 +210,11 @@ const Courses = () => {
     );
   }
 
-  // =====================================
-  // PAGE
-  // =====================================
 
   return (
     <div className="min-h-screen bg-[#f6f8fc] text-slate-800">
 
-      {/* =====================================
-          MOBILE OVERLAY
-      ===================================== */}
+      {}
 
       {sidebarOpen && (
         <div
@@ -254,9 +225,7 @@ const Courses = () => {
         />
       )}
 
-      {/* =====================================
-          SIDEBAR
-      ===================================== */}
+      {}
 
       <aside
         className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-slate-200 bg-white transition-transform duration-300 ${
@@ -266,7 +235,6 @@ const Courses = () => {
         } lg:translate-x-0`}
       >
 
-        {/* LOGO */}
 
         <div className="flex h-24 shrink-0 items-center border-b border-slate-100 px-7">
           <div className="flex items-center gap-3">
@@ -298,7 +266,6 @@ const Courses = () => {
           </button>
         </div>
 
-        {/* NAVIGATION */}
 
         <nav className="flex-1 overflow-y-auto px-4 py-7">
 
@@ -374,7 +341,6 @@ const Courses = () => {
 
         </nav>
 
-        {/* USER */}
 
         <div className="shrink-0 border-t border-slate-100 p-4">
 
@@ -416,28 +382,16 @@ const Courses = () => {
 
       </aside>
 
-      {/* =====================================
-          MAIN PAGE
-
-          IMPORTANT:
-          NO lg:pl-72
-          NO lg:ml-72
-
-          The parent layout is already handling
-          the sidebar spacing.
-      ===================================== */}
+      {}
 
       <div className="min-h-screen">
 
-        {/* =====================================
-            HEADER
-        ===================================== */}
+        {}
 
         <header className="sticky top-0 z-20 flex h-24 items-center justify-between border-b border-slate-200 bg-white/95 px-5 backdrop-blur md:px-8">
 
           <div className="flex items-center gap-3">
 
-            {/* MOBILE MENU */}
 
             <button
               onClick={() =>
@@ -449,7 +403,6 @@ const Courses = () => {
               <Menu size={21} />
             </button>
 
-            {/* BACK */}
 
             <button
               onClick={() =>
@@ -473,7 +426,6 @@ const Courses = () => {
 
           </div>
 
-          {/* PROFILE */}
 
           <button
             onClick={() =>
@@ -489,17 +441,13 @@ const Courses = () => {
 
         </header>
 
-        {/* =====================================
-            CONTENT
-        ===================================== */}
+        {}
 
         <main className="w-full px-5 py-8 md:px-8 lg:px-10">
 
           <div className="mx-auto w-full max-w-[1400px]">
 
-            {/* =====================================
-                TITLE
-            ===================================== */}
+            {}
 
             <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
 
@@ -534,9 +482,7 @@ const Courses = () => {
 
             </div>
 
-            {/* =====================================
-                ERROR
-            ===================================== */}
+            {}
 
             {error && (
               <div className="mb-6 flex items-center justify-between gap-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
@@ -555,16 +501,13 @@ const Courses = () => {
               </div>
             )}
 
-            {/* =====================================
-                SEARCH + FILTER
-            ===================================== */}
+            {}
 
             {courses.length > 0 && (
               <section className="mb-7 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm md:p-4">
 
                 <div className="flex flex-col gap-3 md:flex-row">
 
-                  {/* SEARCH */}
 
                   <div className="relative flex-1">
 
@@ -599,7 +542,6 @@ const Courses = () => {
 
                   </div>
 
-                  {/* LEVEL */}
 
                   <div className="relative md:w-52">
 
@@ -669,9 +611,7 @@ const Courses = () => {
               </section>
             )}
 
-            {/* =====================================
-                NO COURSES
-            ===================================== */}
+            {}
 
             {courses.length === 0 ? (
 
@@ -707,9 +647,7 @@ const Courses = () => {
             ) : filteredCourses.length ===
               0 ? (
 
-              /* =====================================
-                  NO SEARCH RESULTS
-              ===================================== */
+              
 
               <div className="rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-sm">
 
@@ -738,9 +676,7 @@ const Courses = () => {
 
             ) : (
 
-              /* =====================================
-                  COURSES
-              ===================================== */
+              
 
               <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
 
@@ -775,13 +711,11 @@ const Courses = () => {
                         className="group flex min-h-[430px] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:border-indigo-100 hover:shadow-lg hover:shadow-slate-200/70"
                       >
 
-                        {/* TOP ACCENT */}
 
                         <div className="h-1 w-full bg-indigo-500" />
 
                         <div className="flex flex-1 flex-col p-6">
 
-                          {/* COURSE HEADER */}
 
                           <div className="flex items-start justify-between gap-3">
 
@@ -797,14 +731,12 @@ const Courses = () => {
 
                           </div>
 
-                          {/* DESCRIPTION */}
 
                           <p className="mt-4 line-clamp-3 min-h-[72px] text-sm leading-6 text-slate-500">
                             {course.description ||
                               "Build practical skills through structured learning and hands-on practice."}
                           </p>
 
-                          {/* SKILLS */}
 
                           <div className="mt-5">
 
@@ -852,7 +784,6 @@ const Courses = () => {
 
                           </div>
 
-                          {/* TOPICS */}
 
                           <div className="mt-5">
 
@@ -883,7 +814,6 @@ const Courses = () => {
 
                           </div>
 
-                          {/* DURATION */}
 
                           <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-slate-500">
 
@@ -899,7 +829,6 @@ const Courses = () => {
 
                           </div>
 
-                          {/* ACTIONS */}
 
                           <div className="mt-auto flex gap-3 pt-7">
 
@@ -929,7 +858,6 @@ const Courses = () => {
 
                           </div>
 
-                          {/* DELETE */}
 
                           {isManager && (
                             <button
@@ -954,7 +882,6 @@ const Courses = () => {
               </div>
             )}
 
-            {/* RESULT COUNT */}
 
             {filteredCourses.length >
               0 && (

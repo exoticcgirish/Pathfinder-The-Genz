@@ -38,9 +38,6 @@ const Roadmap = () => {
     navigate("/login");
   };
 
-  // =========================
-  // NAVIGATION
-  // =========================
 
   const navItems = [
     {
@@ -76,9 +73,6 @@ const Roadmap = () => {
     navigate(path);
   };
 
-  // =========================
-  // LOAD ROADMAP
-  // =========================
 
   const loadRoadmap = async (regenerate = false) => {
     try {
@@ -129,9 +123,6 @@ const Roadmap = () => {
     loadRoadmap();
   }, []);
 
-  // =========================
-  // LOADING
-  // =========================
 
   if (loading || generating) {
     return (
@@ -146,7 +137,6 @@ const Roadmap = () => {
           handleLogout={handleLogout}
         />
 
-        {/* MAIN - NO lg:pl-72 */}
         <div className='min-h-screen'>
           <header className='sticky top-0 z-20 flex h-24 items-center border-b border-slate-200 bg-white/95 px-5 backdrop-blur md:px-8'>
             <button
@@ -196,9 +186,6 @@ const Roadmap = () => {
     );
   }
 
-  // =========================
-  // ERROR
-  // =========================
 
   if (error) {
     return (
@@ -213,7 +200,6 @@ const Roadmap = () => {
           handleLogout={handleLogout}
         />
 
-        {/* MAIN - NO lg:pl-72 */}
         <div className='min-h-screen'>
           <header className='flex h-24 items-center border-b border-slate-200 bg-white px-5 md:px-8'>
             <button
@@ -262,9 +248,6 @@ const Roadmap = () => {
 
   const phases = Array.isArray(roadmap?.phases) ? roadmap.phases : [];
 
-  // =========================
-  // NO ROADMAP
-  // =========================
 
   if (!phases.length) {
     return (
@@ -279,7 +262,6 @@ const Roadmap = () => {
           handleLogout={handleLogout}
         />
 
-        {/* MAIN - NO lg:pl-72 */}
         <div className='min-h-screen'>
           <header className='flex h-24 items-center border-b border-slate-200 bg-white px-5 md:px-8'>
             <button
@@ -332,9 +314,6 @@ const Roadmap = () => {
     );
   }
 
-  // =========================
-  // ROADMAP
-  // =========================
 
   return (
     <div className='min-h-screen bg-[#f5f8fc]'>
@@ -354,10 +333,8 @@ const Roadmap = () => {
           NO lg:ml-72
       */}
       <div className='min-h-screen'>
-        {/* HEADER */}
         <header className='sticky top-0 z-20 flex h-24 items-center justify-between border-b border-slate-200 bg-white/95 px-5 backdrop-blur md:px-8'>
           <div className='flex items-center gap-3'>
-            {/* MOBILE MENU */}
             <button
               onClick={() => setSidebarOpen(true)}
               aria-label='Open menu'
@@ -366,7 +343,6 @@ const Roadmap = () => {
               <Menu size={21} />
             </button>
 
-            {/* BACK */}
             <button
               onClick={() => navigate(-1)}
               className='flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-600 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700'
@@ -388,7 +364,6 @@ const Roadmap = () => {
           </div>
 
           <div className='flex items-center gap-3'>
-            {/* AI MENTOR */}
             <button
               onClick={() => navigate("/chat")}
               className='hidden items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 sm:flex'
@@ -397,7 +372,6 @@ const Roadmap = () => {
               AI Mentor
             </button>
 
-            {/* PROFILE */}
             <button
               onClick={() => navigate("/profile")}
               aria-label='Open profile'
@@ -408,10 +382,8 @@ const Roadmap = () => {
           </div>
         </header>
 
-        {/* CONTENT */}
         <main className='w-full px-5 py-8 md:px-8 lg:px-10'>
           <div className='mx-auto w-full max-w-[1500px]'>
-            {/* PAGE HEADER */}
             <section className='mb-8 rounded-3xl bg-slate-900 p-7 text-white shadow-xl md:p-9'>
               <div className='flex flex-col justify-between gap-6 md:flex-row md:items-start'>
                 <div className='max-w-3xl'>
@@ -430,7 +402,6 @@ const Roadmap = () => {
                   </p>
                 </div>
 
-                {/* REGENERATE */}
                 <button
                   onClick={() => loadRoadmap(true)}
                   disabled={generating}
@@ -441,7 +412,6 @@ const Roadmap = () => {
               </div>
             </section>
 
-            {/* PHASES */}
             <div className='space-y-6'>
               {phases.map((phase, index) => {
                 const course =
@@ -463,7 +433,6 @@ const Roadmap = () => {
                     key={phase?.phase || index}
                     className='rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-7'
                   >
-                    {/* PHASE HEADER */}
                     <div className='flex gap-5'>
                       <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-indigo-600 font-bold text-white'>
                         {phase?.phase || index + 1}
@@ -486,7 +455,6 @@ const Roadmap = () => {
                       </div>
                     </div>
 
-                    {/* SKILLS */}
                     {Array.isArray(phase?.skills) &&
                       phase.skills.length > 0 && (
                         <div className='mt-6'>
@@ -507,7 +475,6 @@ const Roadmap = () => {
                         </div>
                       )}
 
-                    {/* TOPICS */}
                     {Array.isArray(phase?.topics) &&
                       phase.topics.length > 0 && (
                         <div className='mt-6'>
@@ -523,7 +490,6 @@ const Roadmap = () => {
                         </div>
                       )}
 
-                    {/* PROJECTS */}
                     {Array.isArray(phase?.projects) &&
                       phase.projects.length > 0 && (
                         <div className='mt-6'>
@@ -541,14 +507,12 @@ const Roadmap = () => {
                         </div>
                       )}
 
-                    {/* RESOURCES */}
                     <div className='mt-7'>
                       <h3 className='text-sm font-bold uppercase tracking-wider text-slate-400'>
                         Recommended Resources
                       </h3>
 
                       <div className='mt-4 grid gap-4 md:grid-cols-2'>
-                        {/* PATHFINDER COURSE */}
                         {course && (
                           <div className='rounded-2xl border border-indigo-100 bg-indigo-50 p-5'>
                             <p className='text-xs font-bold uppercase tracking-wider text-indigo-600'>
@@ -584,7 +548,6 @@ const Roadmap = () => {
                           </div>
                         )}
 
-                        {/* YOUTUBE */}
                         {youtube && (
                           <div className='rounded-2xl border border-red-100 bg-red-50 p-5'>
                             <p className='text-xs font-bold uppercase tracking-wider text-red-600'>
@@ -637,7 +600,6 @@ const Roadmap = () => {
                         )}
                       </div>
 
-                      {/* NO RESOURCES */}
                       {!course && !youtube && (
                         <p className='mt-4 rounded-xl bg-slate-50 p-4 text-sm text-slate-500'>
                           No learning resources found for this phase.
@@ -645,7 +607,6 @@ const Roadmap = () => {
                       )}
                     </div>
 
-                    {/* MILESTONE */}
                     {phase?.milestone && (
                       <div className='mt-6 rounded-2xl bg-slate-50 p-5'>
                         <p className='text-xs font-bold uppercase tracking-wider text-slate-400'>
@@ -668,9 +629,6 @@ const Roadmap = () => {
   );
 };
 
-// ======================================================
-// SIDEBAR
-// ======================================================
 
 const Sidebar = ({
   sidebarOpen,
@@ -683,7 +641,6 @@ const Sidebar = ({
 }) => {
   return (
     <>
-      {/* MOBILE OVERLAY */}
       {sidebarOpen && (
         <div
           className='fixed inset-0 z-30 bg-slate-900/40 backdrop-blur-[1px] lg:hidden'
@@ -691,13 +648,11 @@ const Sidebar = ({
         />
       )}
 
-      {/* SIDEBAR */}
       <aside
         className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-slate-200 bg-white transition-transform duration-300 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0`}
       >
-        {/* LOGO */}
         <div className='flex h-24 shrink-0 items-center border-b border-slate-100 px-7'>
           <div className='flex items-center gap-3'>
             <div className='flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 text-xl font-black text-white shadow-sm'>
@@ -724,7 +679,6 @@ const Sidebar = ({
           </button>
         </div>
 
-        {/* NAVIGATION */}
         <nav className='flex-1 overflow-y-auto px-4 py-7'>
           <p className='mb-3 px-3 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400'>
             Main menu
@@ -761,7 +715,6 @@ const Sidebar = ({
             })}
           </div>
 
-          {/* ACCOUNT */}
           <p className='mb-3 mt-9 px-3 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400'>
             Account
           </p>
@@ -783,7 +736,6 @@ const Sidebar = ({
           </button>
         </nav>
 
-        {/* USER CARD */}
         <div className='shrink-0 border-t border-slate-100 p-4'>
           <div className='rounded-2xl bg-slate-50 p-4'>
             <button

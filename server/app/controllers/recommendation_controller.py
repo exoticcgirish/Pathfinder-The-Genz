@@ -13,9 +13,6 @@ from app.services.recommendation_service import (
 
 class RecommendationController:
 
-    # =====================================================
-    # ANALYZE + GENERATE RECOMMENDATIONS
-    # =====================================================
 
     @staticmethod
     @jwt_required()
@@ -86,9 +83,6 @@ class RecommendationController:
                 result
         }), 200
 
-    # =====================================================
-    # GET PERSONALIZED RECOMMENDATIONS
-    # =====================================================
 
     @staticmethod
     @jwt_required()

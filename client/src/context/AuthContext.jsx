@@ -39,9 +39,6 @@ export const AuthProvider = ({ children }) => {
 
   const [loading, setLoading] = useState(true);
 
-  // =========================
-  // RESTORE LOGGED-IN USER
-  // =========================
   useEffect(() => {
     const loadUser = async () => {
       const token = storage.getToken();
@@ -79,9 +76,6 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, []);
 
-  // =========================
-  // REGISTER
-  // =========================
   const register = async (formData) => {
     try {
       console.log("REGISTER REQUEST:", formData);
@@ -109,9 +103,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // =========================
-  // LOGIN
-  // =========================
   const login = async (email, password) => {
     try {
       const response = await loginApi({
@@ -166,17 +157,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // =========================
-  // LOGOUT
-  // =========================
   const logout = () => {
     storage.clear();
     setUser(null);
   };
 
-  // =========================
-  // REFRESH USER
-  // =========================
   const refreshUser = async () => {
     try {
       const response = await getProfile();

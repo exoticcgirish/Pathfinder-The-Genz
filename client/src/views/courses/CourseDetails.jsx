@@ -54,9 +54,6 @@ const CourseDetails = () => {
     useState("");
 
 
-  // =========================================
-  // LOAD COURSE
-  // =========================================
 
   useEffect(() => {
     const loadCourse = async () => {
@@ -92,9 +89,6 @@ const CourseDetails = () => {
   }, [id]);
 
 
-  // =========================================
-  // NORMALIZED DATA
-  // =========================================
 
   const skills = useMemo(() => {
     return Array.isArray(
@@ -173,9 +167,6 @@ const CourseDetails = () => {
     "Self-paced";
 
 
-  // =========================================
-  // START COURSE
-  // =========================================
 
   const handleStartCourse =
     async () => {
@@ -209,8 +200,8 @@ const CourseDetails = () => {
             "Course started successfully. Opening your learning progress..."
         );
 
-        // Give the learner brief feedback, then open
-        // the progress page where the active record is visible.
+        
+        
         setTimeout(() => {
           navigate("/progress");
         }, 900);
@@ -231,9 +222,6 @@ const CourseDetails = () => {
     };
 
 
-  // =========================================
-  // OPEN EXTERNAL RESOURCE
-  // =========================================
 
   const handleOpenResource =
     () => {
@@ -249,9 +237,6 @@ const CourseDetails = () => {
     };
 
 
-  // =========================================
-  // LOADING
-  // =========================================
 
   if (loading) {
     return (
@@ -272,9 +257,6 @@ const CourseDetails = () => {
   }
 
 
-  // =========================================
-  // ERROR
-  // =========================================
 
   if (
     error &&
@@ -314,9 +296,7 @@ const CourseDetails = () => {
   return (
     <div className="min-h-screen bg-[#f5f8fc]">
 
-      {/* =====================================
-          HEADER
-      ====================================== */}
+      {}
 
       <header className="border-b border-slate-200 bg-white">
 
@@ -342,14 +322,11 @@ const CourseDetails = () => {
       </header>
 
 
-      {/* =====================================
-          PAGE
-      ====================================== */}
+      {}
 
       <main className="mx-auto max-w-6xl px-5 py-8 md:px-8 md:py-10">
 
 
-        {/* ALERTS */}
 
         {error && (
 
@@ -375,9 +352,7 @@ const CourseDetails = () => {
         )}
 
 
-        {/* =================================
-            HERO
-        ================================== */}
+        {}
 
         <section className="relative overflow-hidden rounded-3xl bg-slate-900 p-7 text-white shadow-xl shadow-slate-200 md:p-10">
 
@@ -513,19 +488,15 @@ const CourseDetails = () => {
         </section>
 
 
-        {/* =================================
-            MAIN GRID
-        ================================== */}
+        {}
 
         <section className="mt-7 grid gap-7 lg:grid-cols-[1.5fr_0.7fr]">
 
 
-          {/* LEFT */}
 
           <div className="space-y-7">
 
 
-            {/* SKILLS */}
 
             <article className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
 
@@ -587,7 +558,6 @@ const CourseDetails = () => {
             </article>
 
 
-            {/* TOPICS */}
 
             <article className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
 
@@ -657,7 +627,6 @@ const CourseDetails = () => {
             </article>
 
 
-            {/* OUTCOMES */}
 
             <article className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
 
@@ -720,9 +689,7 @@ const CourseDetails = () => {
           </div>
 
 
-          {/* =================================
-              RIGHT SUMMARY
-          ================================== */}
+          {}
 
           <aside className="space-y-6">
 

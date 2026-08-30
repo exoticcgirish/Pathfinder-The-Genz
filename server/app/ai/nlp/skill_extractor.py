@@ -53,5 +53,4 @@ def extract_skills(text):
         if re.search(pattern, text):
             found_skills.append(skill)
 
-    # Remove duplicate skills
     return list(dict.fromkeys(found_skills))

@@ -7,9 +7,6 @@ from app.models.user_model import UserModel
 
 class AuthService:
 
-    # =========================
-    # REGISTER
-    # =========================
 
     @staticmethod
     def register(name, email, password, role="learner"):
@@ -19,7 +16,6 @@ class AuthService:
         if existing:
             return None, "User already exists"
 
-        # Never allow public registration as admin
         if role not in ["learner", "content_manager"]:
             role = "learner"
 
@@ -49,14 +45,10 @@ class AuthService:
 
         UserModel.create(user)
 
-        # Do not return password
         user.pop("password", None)
 
         return user, None
 
-    # =========================
-    # LOGIN
-    # =========================
 
     @staticmethod
     def login(email, password):
@@ -86,7 +78,6 @@ class AuthService:
 
         role = user.get("role", "learner")
 
-        # JWT contains role
         token = create_access_token(
             identity=str(user["_id"]),
             additional_claims={

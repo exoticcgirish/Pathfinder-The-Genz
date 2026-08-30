@@ -43,7 +43,7 @@ const Login = () => {
       default:
         console.warn("Unknown role:", role);
 
-        // Default normal user
+        
         navigate("/dashboard", { replace: true });
         break;
     }
@@ -98,7 +98,6 @@ const Login = () => {
     <div className="auth-background min-h-screen flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
 
-        {/* Brand */}
         <div className="mb-8 text-center">
           <div className="inline-flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 text-xl font-bold text-white shadow-lg shadow-indigo-200">
@@ -115,7 +114,6 @@ const Login = () => {
           </p>
         </div>
 
-        {/* Card */}
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60">
 
           <div className="mb-8">
@@ -136,7 +134,6 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
 
-            {/* Email */}
             <div>
               <label className="mb-2 block text-sm font-semibold text-slate-700">
                 Email
@@ -153,7 +150,6 @@ const Login = () => {
               />
             </div>
 
-            {/* Password */}
             <div>
               <label className="mb-2 block text-sm font-semibold text-slate-700">
                 Password
@@ -170,7 +166,6 @@ const Login = () => {
               />
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={loading}

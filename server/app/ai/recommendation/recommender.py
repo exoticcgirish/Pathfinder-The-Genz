@@ -29,7 +29,6 @@ class Recommender:
 
         required_skills = required_skills or []
 
-        # Normalize skills
         user_skills = [
             skill.lower().strip()
             for skill in user_skills
@@ -40,9 +39,6 @@ class Recommender:
             for skill in required_skills
         ]
 
-        # -------------------------
-        # Skill Gap
-        # -------------------------
 
         gap = calculate_skill_gap(
             user_skills,
@@ -51,9 +47,6 @@ class Recommender:
 
         missing_skills = gap["missing"]
 
-        # -------------------------
-        # User text
-        # -------------------------
 
         user_text = " ".join([
             career_goal,
@@ -62,9 +55,6 @@ class Recommender:
             " ".join(user_skills)
         ])
 
-        # -------------------------
-        # Course text
-        # -------------------------
 
         course_texts = []
 
@@ -79,9 +69,6 @@ class Recommender:
 
             course_texts.append(text)
 
-        # -------------------------
-        # TF-IDF
-        # -------------------------
 
         documents = [user_text] + course_texts
 
@@ -101,9 +88,6 @@ class Recommender:
             course_vectors
         ).flatten()
 
-        # -------------------------
-        # Score courses
-        # -------------------------
 
         results = []
 
@@ -114,13 +98,11 @@ class Recommender:
                 for skill in course.get("skills", [])
             ]
 
-            # User skill similarity
             skill_score = skill_similarity(
                 user_skills,
                 course_skills
             )
 
-            # Missing skill match
             missing_matches = set(
                 course_skills
             ).intersection(
@@ -139,9 +121,6 @@ class Recommender:
                 tfidf_scores[index]
             )
 
-            # -------------------------
-            # Final score
-            # -------------------------
 
             final_score = (
                 tfidf_score * 0.50
@@ -166,9 +145,6 @@ class Recommender:
 
             results.append(course_copy)
 
-        # -------------------------
-        # Rank
-        # -------------------------
 
         results = rank_courses(results)
 
