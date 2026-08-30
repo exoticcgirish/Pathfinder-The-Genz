@@ -57,6 +57,10 @@ class AuthController:
                 "message": error
             }), 400
 
+        # Convert MongoDB ObjectId to string
+        if user and "_id" in user:
+            user["_id"] = str(user["_id"])
+
         return jsonify({
             "success": True,
             "message": "Registration successful",
@@ -94,10 +98,16 @@ class AuthController:
                 "message": error
             }), 401
 
+        user = result["user"]
+
+        # Convert MongoDB ObjectId to string
+        if user and "_id" in user:
+            user["_id"] = str(user["_id"])
+
         return jsonify({
             "success": True,
             "message": "Login successful",
             "token": result["token"],
             "role": result["role"],
-            "user": result["user"]
+            "user": user
         }), 200
