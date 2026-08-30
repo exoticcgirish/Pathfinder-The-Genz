@@ -44,6 +44,9 @@ const CourseDetails = () => {
   const [starting, setStarting] =
     useState(false);
 
+  const [started, setStarted] =
+    useState(false);
+
   const [error, setError] =
     useState("");
 
@@ -181,21 +184,37 @@ const CourseDetails = () => {
         setError("");
         setSuccess("");
 
-        await startCourse(
-          id,
-          {
-            courseTitle:
-              course?.title,
+        const response =
+          await startCourse(
+            id,
+            {
+              courseTitle:
+                course?.title,
 
-            skill:
-              skills[0] ||
-              null,
-          }
+              skill:
+                skills[0] ||
+                null,
+            }
+          );
+
+        console.log(
+          "COURSE START RESPONSE:",
+          response?.data
         );
+
+        setStarted(true);
 
         setSuccess(
-          "Course started successfully. Your progress is now being tracked."
+          response?.data?.message ||
+            "Course started successfully. Opening your learning progress..."
         );
+
+        // Give the learner brief feedback, then open
+        // the progress page where the active record is visible.
+        setTimeout(() => {
+          navigate("/progress");
+        }, 900);
+
       } catch (error) {
         console.error(
           "START COURSE ERROR:",
@@ -441,6 +460,8 @@ const CourseDetails = () => {
 
                 {starting
                   ? "Starting..."
+                  : started
+                  ? "Opening Progress..."
                   : "Start Course"}
 
               </button>
