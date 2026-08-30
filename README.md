@@ -254,5 +254,6 @@ Final Score = (TF-IDF Similarity × 0.50) + (Missing Skill Match × 0.35) + (Cur
 
 ## 👥 Authors & Acknowledgments
 
-- **Team TheGenz**
-- Built with passion for the **HCL Hackathon: AI-Powered Personalized Learning Path Recommender**.
+- **Team The Genz**
+- Built with passion for the **HCLTech AMPlified: The AI Challenge**
+- **AI-Powered Personalized Learning Path Recommender**
