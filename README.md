@@ -254,5 +254,5 @@ Final Score = (TF-IDF Similarity × 0.50) + (Missing Skill Match × 0.35) + (Cur
 
 ## 👥 Authors & Acknowledgments
 
-- **Team Pathfinder**
+- **Team TheGenz**
 - Built with passion for the **HCL Hackathon: AI-Powered Personalized Learning Path Recommender**.
