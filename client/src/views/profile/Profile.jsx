@@ -21,7 +21,7 @@ import { useAuth } from "../../context/AuthContext";
 import { updateMyProfile } from "../../services/userService";
 
 const Profile = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, refreshUser } = useAuth();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -30,6 +30,7 @@ const Profile = () => {
     experienceLevel: "",
     learningPreference: "",
     interests: [],
+    weeklyHours: 0,
   });
 
   const [interest, setInterest] = useState("");
@@ -51,6 +52,7 @@ const Profile = () => {
       interests: Array.isArray(profile.interests)
         ? profile.interests
         : [],
+        weeklyHours: profile.weeklyHours || 0,
     });
   }, [user]);
 
@@ -144,18 +146,46 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setLoading(true);
     setMessage("");
     setError("");
 
+    if (!form.careerGoal.trim()) {
+      setError("Please enter your career goal.");
+      return;
+    }
+
+    if (!form.experienceLevel) {
+      setError("Please select your experience level.");
+      return;
+    }
+
+    if (!form.learningPreference) {
+      setError("Please select your learning preference.");
+      return;
+    }
+
+    if (!Array.isArray(form.interests) || form.interests.length === 0) {
+      setError("Please add at least one learning interest.");
+      return;
+    }
+
+    if (!form.weeklyHours || Number(form.weeklyHours) < 1) {
+      setError("Please select your weekly learning time.");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      const response = await updateMyProfile(form);
+      const response = await updateMyProfile({
+        ...form,
+        weeklyHours: Number(form.weeklyHours),
+      });
 
       console.log("PROFILE UPDATED:", response?.data);
 
       setMessage("Profile updated successfully.");
 
-      // Update form with returned profile if backend sends it
       const updatedProfile =
         response?.data?.profile ||
         response?.data?.user?.profile;
@@ -163,15 +193,16 @@ const Profile = () => {
       if (updatedProfile) {
         setForm({
           careerGoal: updatedProfile.careerGoal || "",
-          experienceLevel:
-            updatedProfile.experienceLevel || "",
-          learningPreference:
-            updatedProfile.learningPreference || "",
+          experienceLevel: updatedProfile.experienceLevel || "",
+          learningPreference: updatedProfile.learningPreference || "",
           interests: Array.isArray(updatedProfile.interests)
             ? updatedProfile.interests
             : [],
+          weeklyHours: updatedProfile.weeklyHours || 0,
         });
       }
+
+      await refreshUser();
     } catch (err) {
       console.error("PROFILE UPDATE ERROR:", err);
 
@@ -183,6 +214,19 @@ const Profile = () => {
       setLoading(false);
     }
   };
+
+  const profileCompletion = (() => {
+    let completed = 0;
+    const total = 5;
+
+    if (form.careerGoal.trim()) completed++;
+    if (form.experienceLevel) completed++;
+    if (form.learningPreference) completed++;
+    if (Array.isArray(form.interests) && form.interests.length > 0) completed++;
+    if (Number(form.weeklyHours) > 0) completed++;
+
+    return Math.round((completed / total) * 100);
+  })();
 
   return (
     <div className="min-h-screen bg-[#f5f8fc] text-slate-800">
@@ -488,6 +532,32 @@ const Profile = () => {
 
             </div>
 
+            {/* PROFILE COMPLETENESS */}
+
+            <div className="mb-8 rounded-2xl border border-indigo-100 bg-indigo-50 p-5">
+              <div className="mb-3 flex items-center justify-between gap-4">
+                <div>
+                  <p className="font-bold text-slate-900">
+                    Learning profile completeness
+                  </p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Complete your profile for better AI recommendations.
+                  </p>
+                </div>
+
+                <span className="text-lg font-extrabold text-indigo-600">
+                  {profileCompletion}%
+                </span>
+              </div>
+
+              <div className="h-2 overflow-hidden rounded-full bg-indigo-100">
+                <div
+                  className="h-full rounded-full bg-indigo-600 transition-all duration-500"
+                  style={{ width: `${profileCompletion}%` }}
+                />
+              </div>
+            </div>
+
             {/* FORM */}
 
             <div className="grid gap-6 md:grid-cols-2">
@@ -583,6 +653,27 @@ const Profile = () => {
 
                 </select>
 
+              </div>
+
+              {/* WEEKLY LEARNING TIME */}
+
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  Weekly learning time
+                </label>
+
+                <select
+                  name="weeklyHours"
+                  value={form.weeklyHours}
+                  onChange={handleChange}
+                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                >
+                  <option value="0">Select weekly time</option>
+                  <option value="3">2–4 hours / week</option>
+                  <option value="6">5–8 hours / week</option>
+                  <option value="10">8–12 hours / week</option>
+                  <option value="15">12+ hours / week</option>
+                </select>
               </div>
 
               {/* INTERESTS */}
@@ -684,8 +775,8 @@ const Profile = () => {
 
               <p className="mt-1 text-sm leading-6 text-slate-600">
                 Pathfinder uses your career goal, experience,
-                interests and learning preference to personalize
-                your courses and learning roadmap.
+                interests, learning preference and weekly schedule to
+                personalize your courses and learning roadmap.
               </p>
 
             </div>

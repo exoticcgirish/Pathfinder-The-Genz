@@ -3,18 +3,19 @@ from app.models.user_model import UserModel
 
 class UserService:
 
+    # =========================
+    # FORMAT USER
+    # =========================
     @staticmethod
-    def get_profile(user_id):
-
-        user = UserModel.find_by_id(user_id)
+    def _format_user(user):
 
         if not user:
             return None
 
         return {
             "id": str(user["_id"]),
-            "name": user.get("name"),
-            "email": user.get("email"),
+            "name": user.get("name", ""),
+            "email": user.get("email", ""),
             "role": user.get("role", "learner"),
 
             "profile": user.get(
@@ -33,6 +34,23 @@ class UserService:
             )
         }
 
+    # =========================
+    # GET PROFILE
+    # =========================
+    @staticmethod
+    def get_profile(user_id):
+
+        user = UserModel.find_by_id(
+            user_id
+        )
+
+        return UserService._format_user(
+            user
+        )
+
+    # =========================
+    # UPDATE PROFILE
+    # =========================
     @staticmethod
     def update_profile(
         user_id,
@@ -47,6 +65,10 @@ class UserService:
         if not success:
             return None
 
-        return UserService.get_profile(
+        user = UserModel.find_by_id(
             user_id
+        )
+
+        return UserService._format_user(
+            user
         )

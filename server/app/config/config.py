@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,5 +11,8 @@ class Config:
     DB_NAME = os.getenv("DB_NAME")
 
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+
+        # Set JWT expiry (12 hours here)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=12)
 
     DEBUG = os.getenv("FLASK_ENV") == "development"

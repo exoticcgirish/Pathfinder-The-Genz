@@ -1,0 +1,1108 @@
+* {
+  box-sizing: border-box;
+}
+
+.progress-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(99, 102, 241, 0.12),
+      transparent 30%
+    ),
+    #f6f8fc;
+
+  color: #182033;
+  padding: 36px;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* =====================================
+   HEADER
+===================================== */
+
+.progress-header {
+  max-width: 1400px;
+  margin: 0 auto 30px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.brand-label,
+.eyebrow {
+  color: #6366f1;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.progress-header h1 {
+  margin: 6px 0 5px;
+
+  font-size: clamp(
+    30px,
+    4vw,
+    46px
+  );
+
+  line-height: 1.1;
+}
+
+.progress-header p {
+  color: #667085;
+  margin: 0;
+  font-size: 15px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+
+/* =====================================
+   BUTTONS
+===================================== */
+
+.primary-button,
+.secondary-button,
+.complete-button {
+  border-radius: 12px;
+  padding: 12px 18px;
+
+  border: none;
+  cursor: pointer;
+
+  font-weight: 700;
+  font-size: 14px;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.primary-button {
+  background: #4f46e5;
+  color: white;
+
+  box-shadow:
+    0 8px 22px
+    rgba(79, 70, 229, 0.22);
+}
+
+.primary-button:hover {
+  transform: translateY(-1px);
+}
+
+.secondary-button {
+  background: white;
+  color: #344054;
+
+  border: 1px solid #e4e7ec;
+}
+
+.complete-button {
+  color: #047857;
+  background: #ecfdf3;
+
+  border: 1px solid #a7f3d0;
+}
+
+.complete-button:disabled,
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* =====================================
+   ALERTS
+===================================== */
+
+.alert {
+  max-width: 1400px;
+  margin: 0 auto 20px;
+
+  padding: 14px 18px;
+  border-radius: 12px;
+
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.alert-error {
+  color: #b42318;
+  background: #fef3f2;
+  border: 1px solid #fecdca;
+}
+
+.alert-success {
+  color: #027a48;
+  background: #ecfdf3;
+  border: 1px solid #abefc6;
+}
+
+
+/* =====================================
+   STATS
+===================================== */
+
+.stats-grid {
+  max-width: 1400px;
+  margin: 0 auto 24px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 20px;
+}
+
+.stat-card {
+  background: rgba(
+    255,
+    255,
+    255,
+    0.94
+  );
+
+  border:
+    1px solid #e9edf5;
+
+  border-radius: 20px;
+
+  padding: 22px;
+
+  box-shadow:
+    0 8px 30px
+    rgba(16, 24, 40, 0.04);
+}
+
+.stat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: #667085;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.stat-icon {
+  width: 34px;
+  height: 34px;
+
+  border-radius: 10px;
+
+  background: #eef2ff;
+  color: #4f46e5;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 18px;
+}
+
+.stat-value {
+  font-size: 34px;
+  font-weight: 800;
+
+  margin-top: 16px;
+
+  color: #101828;
+}
+
+.stat-value small {
+  font-size: 16px;
+  color: #667085;
+}
+
+.stat-card p {
+  color: #98a2b3;
+  margin-bottom: 0;
+  font-size: 13px;
+}
+
+.stat-progress {
+  height: 8px;
+
+  margin-top: 14px;
+
+  border-radius: 999px;
+  overflow: hidden;
+
+  background: #eef2f7;
+}
+
+.stat-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #6366f1,
+      #8b5cf6
+    );
+
+  transition: width 0.5s ease;
+}
+
+
+/* =====================================
+   CURRENT PHASE
+===================================== */
+
+.current-phase-card {
+  max-width: 1400px;
+  margin: 0 auto 24px;
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #111827,
+      #252b45
+    );
+
+  color: white;
+
+  padding: 30px;
+
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 18px 50px
+    rgba(17, 24, 39, 0.15);
+}
+
+.phase-copy {
+  max-width: 850px;
+}
+
+.phase-number {
+  color: #a5b4fc;
+
+  margin-top: 12px;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.current-phase-card h2 {
+  font-size: 27px;
+  margin: 8px 0 12px;
+}
+
+.current-phase-card p {
+  color: #cbd5e1;
+  line-height: 1.65;
+}
+
+.skill-chips {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  margin: 18px 0;
+}
+
+.skill-chip {
+  padding: 7px 11px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.1
+    );
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.12
+    );
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.milestone-box {
+  margin-top: 18px;
+
+  padding: 14px 16px;
+
+  border-left:
+    3px solid #818cf8;
+
+  background:
+    rgba(
+      99,
+      102,
+      241,
+      0.1
+    );
+
+  border-radius: 8px;
+}
+
+.milestone-box span {
+  font-size: 11px;
+  color: #a5b4fc;
+  text-transform: uppercase;
+
+  font-weight: 800;
+}
+
+.milestone-box p {
+  margin: 6px 0 0;
+}
+
+.phase-actions {
+  margin-top: 22px;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 10px;
+}
+
+.current-phase-meta {
+  min-width: 220px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.meta-item {
+  padding: 15px 16px;
+
+  border-radius: 14px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.07
+    );
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+}
+
+.meta-item span {
+  display: block;
+
+  font-size: 11px;
+
+  color: #94a3b8;
+
+  margin-bottom: 5px;
+}
+
+.meta-item strong {
+  font-size: 13px;
+}
+
+.active-text {
+  color: #6ee7b7;
+}
+
+
+/* =====================================
+   TWO COLUMN CONTENT
+===================================== */
+
+.content-grid {
+  max-width: 1400px;
+  margin: 0 auto 24px;
+
+  display: grid;
+
+  grid-template-columns:
+    0.9fr 1.1fr;
+
+  gap: 20px;
+}
+
+.panel {
+  background: white;
+
+  border:
+    1px solid #e9edf5;
+
+  border-radius: 20px;
+
+  padding: 24px;
+
+  box-shadow:
+    0 8px 30px
+    rgba(16, 24, 40, 0.04);
+}
+
+.panel-header,
+.section-heading {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.panel h2,
+.section-heading h2 {
+  margin: 6px 0 0;
+
+  font-size: 21px;
+}
+
+.panel-count {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+
+  background: #eef2ff;
+  color: #4f46e5;
+
+  font-weight: 800;
+}
+
+
+/* =====================================
+   PRIORITY SKILLS
+===================================== */
+
+.priority-list {
+  margin-top: 20px;
+}
+
+.priority-item {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 14px;
+
+  padding: 14px 0;
+
+  border-bottom:
+    1px solid #f0f2f5;
+}
+
+.priority-item:last-child {
+  border-bottom: none;
+}
+
+.priority-item strong {
+  display: block;
+
+  font-size: 14px;
+}
+
+.priority-item small {
+  color: #98a2b3;
+
+  display: block;
+
+  margin-top: 4px;
+}
+
+.priority-badge {
+  border-radius: 999px;
+
+  padding: 5px 10px;
+
+  text-transform: capitalize;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.priority-high {
+  color: #b42318;
+  background: #fef3f2;
+}
+
+.priority-medium {
+  color: #b54708;
+  background: #fffaeb;
+}
+
+.priority-low {
+  color: #027a48;
+  background: #ecfdf3;
+}
+
+
+/* =====================================
+   AI MENTOR
+===================================== */
+
+.mentor-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mentor-avatar {
+  width: 46px;
+  height: 46px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #4f46e5,
+      #8b5cf6
+    );
+
+  color: white;
+
+  font-size: 21px;
+
+  box-shadow:
+    0 8px 20px
+    rgba(79, 70, 229, 0.25);
+}
+
+.mentor-heading h2 {
+  margin: 3px 0 0;
+}
+
+.mentor-description {
+  color: #667085;
+  line-height: 1.6;
+
+  font-size: 14px;
+}
+
+.quick-prompts {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  margin: 16px 0;
+}
+
+.quick-prompts button {
+  border: 1px solid #e4e7ec;
+
+  background: #fafbff;
+  color: #344054;
+
+  border-radius: 999px;
+
+  padding: 8px 12px;
+
+  cursor: pointer;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mentor-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.mentor-input-row input {
+  flex: 1;
+
+  min-width: 0;
+
+  padding: 13px 14px;
+
+  border:
+    1px solid #dfe3eb;
+
+  border-radius: 12px;
+
+  outline: none;
+
+  font-size: 14px;
+}
+
+.mentor-input-row input:focus {
+  border-color: #818cf8;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(99, 102, 241, 0.1);
+}
+
+.mentor-input-row button {
+  border: none;
+
+  background: #4f46e5;
+  color: white;
+
+  border-radius: 12px;
+
+  padding: 0 18px;
+
+  cursor: pointer;
+
+  font-weight: 800;
+}
+
+.mentor-input-row button:disabled {
+  opacity: 0.5;
+}
+
+.mentor-thinking {
+  color: #667085;
+
+  font-size: 13px;
+
+  padding: 15px 0;
+}
+
+.mentor-response {
+  margin-top: 16px;
+
+  padding: 16px;
+
+  background: #f8f9ff;
+
+  border:
+    1px solid #e4e7ff;
+
+  border-radius: 14px;
+}
+
+.mentor-response-title {
+  font-size: 12px;
+  color: #4f46e5;
+
+  text-transform: uppercase;
+  font-weight: 800;
+
+  margin-bottom: 8px;
+}
+
+.mentor-response-text {
+  color: #344054;
+
+  white-space: pre-wrap;
+
+  max-height: 290px;
+  overflow-y: auto;
+
+  line-height: 1.6;
+
+  font-size: 13px;
+}
+
+.open-chat-button {
+  margin-top: 12px;
+
+  border: none;
+  background: transparent;
+
+  color: #4f46e5;
+
+  cursor: pointer;
+
+  font-weight: 700;
+}
+
+
+/* =====================================
+   ROADMAP
+===================================== */
+
+.roadmap-section {
+  max-width: 1400px;
+
+  margin: 0 auto 24px;
+
+  background: white;
+
+  border:
+    1px solid #e9edf5;
+
+  border-radius: 20px;
+
+  padding: 26px;
+
+  box-shadow:
+    0 8px 30px
+    rgba(16, 24, 40, 0.04);
+}
+
+.text-button {
+  background: none;
+  border: none;
+
+  color: #4f46e5;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.roadmap-timeline {
+  margin-top: 28px;
+}
+
+.roadmap-phase {
+  display: grid;
+
+  grid-template-columns:
+    42px 1fr;
+
+  position: relative;
+
+  min-height: 120px;
+}
+
+.phase-marker {
+  width: 32px;
+  height: 32px;
+
+  z-index: 2;
+
+  border-radius: 50%;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.phase-completed
+.phase-marker {
+  background: #ecfdf3;
+  color: #027a48;
+
+  border:
+    2px solid #6ce9a6;
+}
+
+.phase-current
+.phase-marker {
+  background: #eef2ff;
+  color: #4f46e5;
+
+  border:
+    2px solid #818cf8;
+}
+
+.phase-locked
+.phase-marker {
+  background: #f2f4f7;
+
+  border:
+    2px solid #d0d5dd;
+}
+
+.timeline-line {
+  position: absolute;
+
+  left: 15px;
+  top: 32px;
+  bottom: 0;
+
+  width: 2px;
+
+  background: #eaecf0;
+}
+
+.roadmap-phase:last-child
+.timeline-line {
+  display: none;
+}
+
+.roadmap-phase-content {
+  padding:
+    0 0 26px 8px;
+}
+
+.phase-card-top {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  color: #98a2b3;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.roadmap-phase-content h3 {
+  margin: 6px 0 10px;
+
+  font-size: 16px;
+}
+
+.phase-locked
+.roadmap-phase-content {
+  opacity: 0.55;
+}
+
+.phase-status {
+  font-size: 11px;
+
+  background: #f2f4f7;
+
+  padding: 5px 9px;
+
+  border-radius: 999px;
+}
+
+.phase-current
+.phase-status {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+.phase-completed
+.phase-status {
+  background: #ecfdf3;
+  color: #027a48;
+}
+
+.mini-skills {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 6px;
+}
+
+.mini-skills span {
+  padding: 5px 8px;
+
+  background: #f8fafc;
+
+  border-radius: 7px;
+
+  color: #667085;
+
+  font-size: 11px;
+}
+
+.phase-open-button {
+  margin-top: 12px;
+
+  border: none;
+
+  background: transparent;
+
+  padding: 0;
+
+  color: #4f46e5;
+
+  cursor: pointer;
+
+  font-weight: 700;
+}
+
+
+/* =====================================
+   EMPTY / LOADING
+===================================== */
+
+.empty-state {
+  text-align: center;
+
+  padding: 30px 10px;
+
+  color: #667085;
+}
+
+.progress-loading {
+  min-height: 75vh;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 42px;
+  height: 42px;
+
+  border:
+    4px solid #e4e7ec;
+
+  border-top-color: #4f46e5;
+
+  border-radius: 50%;
+
+  animation:
+    spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.progress-loading p {
+  color: #667085;
+}
+
+
+/* =====================================
+   FOOTER
+===================================== */
+
+.progress-footer {
+  max-width: 1400px;
+  margin: 0 auto;
+
+  padding: 12px 4px 30px;
+
+  display: flex;
+  justify-content: space-between;
+
+  color: #98a2b3;
+
+  font-size: 12px;
+}
+
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+
+@media (
+  max-width: 1000px
+) {
+
+  .stats-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .content-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .current-phase-card {
+    flex-direction: column;
+  }
+
+  .current-phase-meta {
+    display: grid;
+
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+}
+
+
+@media (
+  max-width: 700px
+) {
+
+  .progress-page {
+    padding: 20px 14px;
+  }
+
+  .progress-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .progress-header h1 {
+    font-size: 32px;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions button {
+    flex: 1;
+  }
+
+  .current-phase-card {
+    padding: 22px;
+  }
+
+  .current-phase-meta {
+    grid-template-columns:
+      1fr;
+  }
+
+  .phase-actions {
+    flex-direction: column;
+  }
+
+  .phase-actions button {
+    width: 100%;
+  }
+
+  .panel-header,
+  .section-heading {
+    align-items: flex-start;
+  }
+
+  .mentor-input-row {
+    flex-direction: column;
+  }
+
+  .mentor-input-row button {
+    padding: 12px;
+  }
+
+  .progress-footer {
+    flex-direction: column;
+
+    gap: 6px;
+  }
+}

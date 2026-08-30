@@ -3,32 +3,110 @@ from bson import ObjectId
 from urllib.parse import quote_plus
 
 from app.config.database import get_db
-from app.services.gemini_service import generate_roadmap
+
+from app.services.gemini_service import (
+    generate_roadmap as generate_ai_roadmap
+)
+
 from app.services.youtube_service import find_playlist
+from app.services.user_service import UserService
+from app.services.skill_service import SkillService
+from app.services.recommendation_service import (
+    RecommendationService
+)
+
+from app.models.roadmap_model import RoadmapModel
 
 
 class RoadmapService:
+
+    # =========================================================
+    # NORMALIZE
+    # =========================================================
+
+    @staticmethod
+    def normalize(value):
+
+        return str(
+            value or ""
+        ).strip().lower()
+
+    # =========================================================
+    # EXTRACT USER SKILL NAMES
+    # =========================================================
+
+    @staticmethod
+    def extract_skill_names(skills):
+
+        result = []
+
+        for skill in skills or []:
+
+            if isinstance(skill, dict):
+
+                name = (
+                    skill.get("name")
+                    or skill.get("skill")
+                )
+
+            else:
+                name = skill
+
+            name = str(
+                name or ""
+            ).strip()
+
+            if name:
+                result.append(name)
+
+        return result
 
     # =========================================================
     # MATCH COURSE FROM MONGODB
     # =========================================================
 
     @staticmethod
-    def match_course(db, phase):
+    def match_course(
+        db,
+        phase
+    ):
 
-        keywords = phase.get("searchKeywords", [])
+        keywords = (
+            phase.get(
+                "searchKeywords",
+                []
+            )
+        )
 
         if not keywords:
+
             keywords = (
-                phase.get("skills", [])
-                + phase.get("topics", [])
-                + [phase.get("title", "")]
+                phase.get(
+                    "skills",
+                    []
+                )
+                +
+                phase.get(
+                    "topics",
+                    []
+                )
+                +
+                [
+                    phase.get(
+                        "title",
+                        ""
+                    )
+                ]
             )
 
         keywords = [
-            str(k).lower().strip()
-            for k in keywords
-            if str(k).strip()
+            str(keyword)
+            .lower()
+            .strip()
+
+            for keyword in keywords
+
+            if str(keyword).strip()
         ]
 
         if not keywords:
@@ -37,27 +115,41 @@ class RoadmapService:
         best_course = None
         best_score = 0
 
-        for course in db["courses"].find({}):
+        for course in db[
+            "courses"
+        ].find({}):
 
             title = str(
-                course.get("title", "")
+                course.get(
+                    "title",
+                    ""
+                )
             ).lower()
 
             description = str(
-                course.get("description", "")
+                course.get(
+                    "description",
+                    ""
+                )
             ).lower()
 
             skills = " ".join(
                 map(
                     str,
-                    course.get("skills", [])
+                    course.get(
+                        "skills",
+                        []
+                    )
                 )
             ).lower()
 
             topics = " ".join(
                 map(
                     str,
-                    course.get("topics", [])
+                    course.get(
+                        "topics",
+                        []
+                    )
                 )
             ).lower()
 
@@ -78,32 +170,76 @@ class RoadmapService:
                     score += 1
 
             if score > best_score:
+
                 best_score = score
                 best_course = course
 
-        if not best_course or best_score < 3:
+        if (
+            not best_course
+            or best_score < 3
+        ):
             return None
 
         return {
-            "id": str(best_course["_id"]),
 
-            "title": best_course.get(
-                "title",
-                "Course"
+            "id": str(
+                best_course[
+                    "_id"
+                ]
             ),
 
-            "description": best_course.get(
-                "description",
-                ""
-            ),
+            "title":
+                best_course.get(
+                    "title",
+                    "Course"
+                ),
+
+            "description":
+                best_course.get(
+                    "description",
+                    ""
+                ),
+
+            "skills":
+                best_course.get(
+                    "skills",
+                    []
+                ),
+
+            "level":
+                best_course.get(
+                    "level",
+                    best_course.get(
+                        "difficulty",
+                        ""
+                    )
+                ),
+
+            "duration":
+                best_course.get(
+                    "duration",
+                    ""
+                ),
 
             "link": (
-                best_course.get("url")
-                or best_course.get("link")
-                or f"/courses/{str(best_course['_id'])}"
+                best_course.get(
+                    "url"
+                )
+                or best_course.get(
+                    "link"
+                )
+                or (
+                    "/courses/"
+                    + str(
+                        best_course[
+                            "_id"
+                        ]
+                    )
+                )
             ),
 
-            "matchScore": best_score
+            "matchScore":
+                best_score
         }
 
     # =========================================================
@@ -111,352 +247,1063 @@ class RoadmapService:
     # =========================================================
 
     @staticmethod
-    def find_youtube_playlist(phase):
+    def find_youtube_playlist(
+        phase
+    ):
 
         query = (
-            phase.get("youtubePlaylistQuery")
-            or phase.get("youtubeSearchQuery")
-            or phase.get("title")
+            phase.get(
+                "youtubePlaylistQuery"
+            )
+            or phase.get(
+                "youtubeSearchQuery"
+            )
+            or phase.get(
+                "title"
+            )
             or " ".join(
                 map(
                     str,
-                    phase.get("skills", [])
+                    phase.get(
+                        "skills",
+                        []
+                    )
                 )
             )
         )
 
-        query = str(query).strip()
+        query = str(
+            query or ""
+        ).strip()
 
         if not query:
             return None
 
         try:
 
-            # youtube_service searches ONLY playlists
-            playlist = find_playlist(query)
+            playlist = (
+                find_playlist(
+                    query
+                )
+            )
 
             if playlist:
 
                 return {
-                    "type": "playlist",
 
-                    "title": playlist.get(
-                        "title",
-                        f"Learn {phase.get('title', 'this phase')}"
-                    ),
+                    "type":
+                        "playlist",
 
-                    "channelTitle": playlist.get(
-                        "channelTitle",
-                        playlist.get("channel", "")
-                    ),
+                    "title":
+                        playlist.get(
+                            "title",
+                            (
+                                "Learn "
+                                + phase.get(
+                                    "title",
+                                    "this phase"
+                                )
+                            )
+                        ),
 
-                    "url": playlist.get(
-                        "url",
-                        ""
-                    ),
+                    "channelTitle":
+                        playlist.get(
+                            "channelTitle",
+                            playlist.get(
+                                "channel",
+                                ""
+                            )
+                        ),
 
-                    "playlistId": playlist.get(
-                        "playlistId",
-                        ""
-                    ),
+                    "url":
+                        playlist.get(
+                            "url",
+                            ""
+                        ),
 
-                    "searchQuery": query
+                    "playlistId":
+                        playlist.get(
+                            "playlistId",
+                            ""
+                        ),
+
+                    "searchQuery":
+                        query
                 }
 
-            # -------------------------------------------------
-            # No playlist found
-            # -------------------------------------------------
-
             return {
-                "type": "search",
 
-                "title": (
-                    f"YouTube search for "
-                    f"{phase.get('title', 'this phase')}"
-                ),
+                "type":
+                    "search",
 
-                "channelTitle": "",
+                "title":
+                    (
+                        "YouTube search for "
+                        + phase.get(
+                            "title",
+                            "this phase"
+                        )
+                    ),
 
-                "url": (
-                    "https://www.youtube.com/results?search_query="
-                    + quote_plus(query)
-                ),
+                "channelTitle":
+                    "",
 
-                "playlistId": "",
+                "url":
+                    (
+                        "https://www.youtube.com/results?search_query="
+                        + quote_plus(
+                            query
+                        )
+                    ),
 
-                "searchQuery": query
+                "playlistId":
+                    "",
+
+                "searchQuery":
+                    query
             }
 
-        except Exception as e:
+        except Exception as error:
 
             print(
                 "YOUTUBE PLAYLIST ERROR:",
-                e
+                error
             )
 
-            # Safe fallback
             return {
-                "type": "search",
 
-                "title": (
-                    f"YouTube resources for "
-                    f"{phase.get('title', 'this phase')}"
-                ),
+                "type":
+                    "search",
 
-                "channelTitle": "",
+                "title":
+                    (
+                        "YouTube resources for "
+                        + phase.get(
+                            "title",
+                            "this phase"
+                        )
+                    ),
 
-                "url": (
-                    "https://www.youtube.com/results?search_query="
-                    + quote_plus(query)
-                ),
+                "channelTitle":
+                    "",
 
-                "playlistId": "",
+                "url":
+                    (
+                        "https://www.youtube.com/results?search_query="
+                        + quote_plus(
+                            query
+                        )
+                    ),
 
-                "searchQuery": query
+                "playlistId":
+                    "",
+
+                "searchQuery":
+                    query
             }
+
+    # =========================================================
+    # FALLBACK PHASE GENERATOR
+    #
+    # Used if Gemini fails or returns invalid phases.
+    # =========================================================
+
+    @staticmethod
+    def build_fallback_phases(
+        priority_skills,
+        weekly_hours
+    ):
+
+        phases = []
+
+        if not priority_skills:
+            return phases
+
+        phase_size = 2
+
+        grouped = [
+
+            priority_skills[
+                index:
+                index + phase_size
+            ]
+
+            for index in range(
+                0,
+                len(priority_skills),
+                phase_size
+            )
+        ]
+
+        for index, group in enumerate(
+            grouped,
+            start=1
+        ):
+
+            skills = [
+                item.get(
+                    "skill"
+                )
+                for item in group
+                if item.get(
+                    "skill"
+                )
+            ]
+
+            prerequisites = []
+
+            for item in group:
+
+                prerequisites.extend(
+                    item.get(
+                        "prerequisites",
+                        []
+                    )
+                )
+
+            prerequisites = list(
+                dict.fromkeys(
+                    prerequisites
+                )
+            )
+
+            estimated_weeks = 2
+
+            if weekly_hours < 5:
+                estimated_weeks = 4
+
+            elif weekly_hours < 8:
+                estimated_weeks = 3
+
+            phases.append({
+
+                "phase":
+                    index,
+
+                "title":
+                    (
+                        "Master "
+                        + " & ".join(
+                            skills
+                        )
+                    ),
+
+                "description":
+                    (
+                        "Build practical understanding of "
+                        + ", ".join(
+                            skills
+                        )
+                        + "."
+                    ),
+
+                "skills":
+                    skills,
+
+                "topics":
+                    skills,
+
+                "prerequisites":
+                    prerequisites,
+
+                "estimatedWeeks":
+                    estimated_weeks,
+
+                "weeklyHours":
+                    weekly_hours,
+
+                "milestone":
+                    (
+                        "Demonstrate practical knowledge of "
+                        + ", ".join(
+                            skills
+                        )
+                    ),
+
+                "project":
+                    (
+                        "Build a mini project using "
+                        + ", ".join(
+                            skills
+                        )
+                    ),
+
+                "whyThisPhase":
+                    (
+                        "These are priority skill gaps "
+                        "for your target career."
+                    ),
+
+                "searchKeywords":
+                    skills,
+
+                "youtubeSearchQuery":
+                    " ".join(
+                        skills
+                    )
+            })
+
+        return phases
+
+    # =========================================================
+    # NORMALIZE AI PHASE
+    # =========================================================
+
+    @staticmethod
+    def normalize_phase(
+        phase,
+        index,
+        weekly_hours
+    ):
+
+        skills = phase.get(
+            "skills",
+            []
+        )
+
+        if not isinstance(
+            skills,
+            list
+        ):
+            skills = []
+
+        topics = phase.get(
+            "topics",
+            []
+        )
+
+        if not isinstance(
+            topics,
+            list
+        ):
+            topics = []
+
+        prerequisites = phase.get(
+            "prerequisites",
+            []
+        )
+
+        if not isinstance(
+            prerequisites,
+            list
+        ):
+            prerequisites = []
+
+        return {
+
+            "phase":
+                phase.get(
+                    "phase",
+                    index
+                ),
+
+            "title":
+                phase.get(
+                    "title",
+                    f"Learning Phase {index}"
+                ),
+
+            "description":
+                phase.get(
+                    "description",
+                    ""
+                ),
+
+            "skills":
+                skills,
+
+            "topics":
+                topics,
+
+            "prerequisites":
+                prerequisites,
+
+            "estimatedWeeks":
+                phase.get(
+                    "estimatedWeeks",
+                    phase.get(
+                        "durationWeeks",
+                        2
+                    )
+                ),
+
+            "weeklyHours":
+                weekly_hours,
+
+            "milestone":
+                phase.get(
+                    "milestone",
+                    (
+                        "Complete this learning phase"
+                    )
+                ),
+
+            "project":
+                phase.get(
+                    "project",
+                    phase.get(
+                        "projectTask",
+                        ""
+                    )
+                ),
+
+            "whyThisPhase":
+                phase.get(
+                    "whyThisPhase",
+                    phase.get(
+                        "reason",
+                        ""
+                    )
+                ),
+
+            "searchKeywords":
+                phase.get(
+                    "searchKeywords",
+                    skills
+                ),
+
+            "youtubeSearchQuery":
+                phase.get(
+                    "youtubePlaylistQuery",
+                    phase.get(
+                        "youtubeSearchQuery",
+                        (
+                            " ".join(
+                                skills
+                            )
+                        )
+                    )
+                ),
+
+            "status":
+                "locked",
+
+            "completed":
+                False
+        }
+
+    # =========================================================
+    # APPLY PREREQUISITE LOCKING
+    # =========================================================
+
+    @staticmethod
+    def apply_phase_statuses(
+        phases
+    ):
+
+        if not phases:
+            return phases
+
+        for index, phase in enumerate(
+            phases
+        ):
+
+            if index == 0:
+
+                phase["status"] = (
+                    "available"
+                )
+
+            else:
+
+                phase["status"] = (
+                    "locked"
+                )
+
+            phase["completed"] = (
+                False
+            )
+
+        return phases
 
     # =========================================================
     # GENERATE ROADMAP
     # =========================================================
 
     @staticmethod
-    def generate(user_id):
+    def generate(
+        user_id
+    ):
 
         try:
 
+            if not ObjectId.is_valid(
+                str(user_id)
+            ):
+
+                return (
+                    None,
+                    "Invalid user"
+                )
+
             db = get_db()
 
-            user = db["users"].find_one({
-                "_id": ObjectId(user_id)
-            })
+            # =================================================
+            # GET REAL USER PROFILE
+            # =================================================
+
+            user = (
+                UserService.get_profile(
+                    user_id
+                )
+            )
 
             if not user:
-                return None, "User not found"
 
-            # =================================================
-            # USER PROFILE
-            # =================================================
+                return (
+                    None,
+                    "User not found"
+                )
 
-            profile_data = user.get(
+            profile = user.get(
                 "profile",
                 {}
             )
 
-            profile = {
-
-                "careerGoal": profile_data.get(
+            career_goal = (
+                profile.get(
                     "careerGoal",
-                    user.get(
-                        "careerGoal",
-                        ""
-                    )
-                ),
-
-                "experienceLevel": profile_data.get(
-                    "experienceLevel",
-                    user.get(
-                        "experienceLevel",
-                        "beginner"
-                    )
-                ),
-
-                "skills": profile_data.get(
-                    "skills",
-                    user.get(
-                        "skills",
-                        []
-                    )
-                ),
-
-                "interests": profile_data.get(
-                    "interests",
-                    user.get(
-                        "interests",
-                        []
-                    )
-                ),
-
-                "learningPreference": profile_data.get(
-                    "learningPreference",
-                    user.get(
-                        "learningPreference",
-                        ""
-                    )
+                    ""
                 )
-            }
+            )
 
-            if not profile["careerGoal"]:
+            if not career_goal:
 
                 return (
                     None,
                     "Please add your career goal first"
                 )
 
+            experience_level = (
+                profile.get(
+                    "experienceLevel",
+                    "beginner"
+                )
+            )
+
+            learning_preference = (
+                profile.get(
+                    "learningPreference",
+                    ""
+                )
+            )
+
+            interests = (
+                profile.get(
+                    "interests",
+                    []
+                )
+            )
+
+            weekly_hours = (
+                profile.get(
+                    "weeklyHours",
+                    5
+                )
+            )
+
+            try:
+
+                weekly_hours = int(
+                    weekly_hours
+                )
+
+            except (
+                TypeError,
+                ValueError
+            ):
+
+                weekly_hours = 5
+
+            # =================================================
+            # CURRENT SKILLS
+            # =================================================
+
+            current_skills = (
+                RoadmapService
+                .extract_skill_names(
+                    user.get(
+                        "skills",
+                        []
+                    )
+                )
+            )
+
+            # =================================================
+            # STEP 2:
+            # SKILL GAP ANALYSIS
+            # =================================================
+
+            skill_analysis = (
+                SkillService
+                .analyze_skill_gap(
+                    career_goal,
+                    user.get(
+                        "skills",
+                        []
+                    ),
+                    experience_level
+                )
+            )
+
+            if not skill_analysis.get(
+                "supportedCareer"
+            ):
+
+                return (
+                    None,
+                    "Career goal is not supported yet"
+                )
+
+            missing_skills = (
+                skill_analysis.get(
+                    "missingSkills",
+                    []
+                )
+            )
+
+            priority_skills = (
+                skill_analysis.get(
+                    "prioritySkills",
+                    []
+                )
+            )
+
+            readiness_score = (
+                skill_analysis.get(
+                    "readinessScore",
+                    0
+                )
+            )
+
+            # =================================================
+            # STEP 3:
+            # PERSONALIZED RECOMMENDATIONS
+            # =================================================
+
+            recommendation_result = (
+                RecommendationService
+                .get_recommendations(
+                    user_id,
+                    top_n=5
+                )
+            )
+
+            recommendations = []
+
+            if (
+                recommendation_result
+                and not recommendation_result.get(
+                    "error"
+                )
+            ):
+
+                recommendations = (
+                    recommendation_result.get(
+                        "recommendations",
+                        []
+                    )
+                )
+
+            # =================================================
+            # AI CONTEXT
+            # =================================================
+
+            ai_context = {
+
+                "careerGoal":
+                    career_goal,
+
+                "experienceLevel":
+                    experience_level,
+
+                "learningPreference":
+                    learning_preference,
+
+                "weeklyHours":
+                    weekly_hours,
+
+                "interests":
+                    interests,
+
+                "currentSkills":
+                    current_skills,
+
+                "missingSkills":
+                    missing_skills,
+
+                "prioritySkills":
+                    priority_skills,
+
+                "readinessScore":
+                    readiness_score,
+
+                "recommendedCourses":
+                    recommendations
+            }
+
             # =================================================
             # GENERATE AI ROADMAP
             # =================================================
 
-            roadmap = generate_roadmap(
-                profile
-            )
+            phases = []
 
-            phases = roadmap.get(
-                "phases",
-                []
-            )
+            try:
+
+                ai_roadmap = (
+                    generate_ai_roadmap(
+                        ai_context
+                    )
+                )
+
+                if isinstance(
+                    ai_roadmap,
+                    dict
+                ):
+
+                    phases = (
+                        ai_roadmap.get(
+                            "phases",
+                            []
+                        )
+                    )
+
+            except Exception as error:
+
+                print(
+                    "GEMINI ROADMAP ERROR:",
+                    error
+                )
+
+                phases = []
+
+            # =================================================
+            # SAFE FALLBACK
+            # =================================================
+
+            if not phases:
+
+                phases = (
+                    RoadmapService
+                    .build_fallback_phases(
+                        priority_skills,
+                        weekly_hours
+                    )
+                )
 
             if not phases:
 
                 return (
                     None,
-                    "AI could not generate roadmap phases"
+                    "Unable to generate roadmap"
                 )
 
             # =================================================
-            # ENRICH PHASES
+            # NORMALIZE + ENRICH PHASES
             # =================================================
 
             final_phases = []
 
-            for phase in phases:
+            for index, phase in enumerate(
+                phases,
+                start=1
+            ):
 
-                # ---------------------------------------------
+                phase = (
+                    RoadmapService
+                    .normalize_phase(
+                        phase,
+                        index,
+                        weekly_hours
+                    )
+                )
+
                 # MongoDB course
-                # ---------------------------------------------
-
                 matched_course = (
-                    RoadmapService.match_course(
+                    RoadmapService
+                    .match_course(
                         db,
                         phase
                     )
                 )
 
-                # ---------------------------------------------
-                # Real YouTube playlist
-                # ---------------------------------------------
-
+                # YouTube resource
                 youtube = (
-                    RoadmapService.find_youtube_playlist(
+                    RoadmapService
+                    .find_youtube_playlist(
                         phase
                     )
                 )
 
-                phase["recommendedCourse"] = (
-                    matched_course
-                )
+                phase[
+                    "recommendedCourse"
+                ] = matched_course
 
-                phase["youtube"] = youtube
+                phase[
+                    "youtube"
+                ] = youtube
 
                 final_phases.append(
                     phase
                 )
 
             # =================================================
-            # SAVE ROADMAP
+            # LOCK FUTURE PHASES
             # =================================================
+
+            final_phases = (
+                RoadmapService
+                .apply_phase_statuses(
+                    final_phases
+                )
+            )
+
+            # =================================================
+            # TOTAL ESTIMATED WEEKS
+            # =================================================
+
+            total_weeks = sum(
+
+                int(
+                    phase.get(
+                        "estimatedWeeks",
+                        0
+                    )
+                    or 0
+                )
+
+                for phase
+                in final_phases
+            )
 
             now = datetime.utcnow()
 
+            # =================================================
+            # VERSION
+            # =================================================
+
+            existing = (
+                RoadmapModel
+                .get_by_user(
+                    user_id
+                )
+            )
+
+            version = 1
+
+            created_at = now
+
+            if existing:
+
+                version = (
+                    existing.get(
+                        "version",
+                        0
+                    )
+                    + 1
+                )
+
+                created_at = (
+                    existing.get(
+                        "createdAt",
+                        now
+                    )
+                )
+
+            # =================================================
+            # ROADMAP DOCUMENT
+            # =================================================
+
             document = {
 
-                "userId": ObjectId(
-                    user_id
-                ),
+                "userId":
+                    ObjectId(
+                        str(user_id)
+                    ),
 
-                "careerGoal": profile[
-                    "careerGoal"
-                ],
+                "careerGoal":
+                    career_goal,
 
-                "experienceLevel": profile[
-                    "experienceLevel"
-                ],
+                "experienceLevel":
+                    experience_level,
 
-                "phases": final_phases,
+                "learningPreference":
+                    learning_preference,
 
-                "generatedFrom": profile,
+                "weeklyHours":
+                    weekly_hours,
 
-                "createdAt": now,
+                "readinessScore":
+                    readiness_score,
 
-                "updatedAt": now
+                "currentSkills":
+                    current_skills,
+
+                "missingSkills":
+                    missing_skills,
+
+                "prioritySkills":
+                    priority_skills,
+
+                "recommendations":
+                    recommendations,
+
+                "totalEstimatedWeeks":
+                    total_weeks,
+
+                "totalPhases":
+                    len(
+                        final_phases
+                    ),
+
+                "phases":
+                    final_phases,
+
+                "version":
+                    version,
+
+                "status":
+                    "active",
+
+                "progressPercentage":
+                    0,
+
+                "generatedFrom":
+                    ai_context,
+
+                "createdAt":
+                    created_at,
+
+                "updatedAt":
+                    now
             }
 
-            db["roadmaps"].update_one(
+            # =================================================
+            # SAVE
+            # =================================================
 
-                {
-                    "userId": ObjectId(
-                        user_id
-                    )
-                },
-
-                {
-                    "$set": document
-                },
-
-                upsert=True
+            RoadmapModel.upsert(
+                user_id,
+                document
             )
 
             # =================================================
             # RESPONSE
             # =================================================
 
-            return {
+            response = dict(
+                document
+            )
 
-                "careerGoal": document[
-                    "careerGoal"
-                ],
-
-                "experienceLevel": document[
-                    "experienceLevel"
-                ],
-
-                "phases": document[
-                    "phases"
+            response[
+                "userId"
+            ] = str(
+                response[
+                    "userId"
                 ]
+            )
 
-            }, None
+            response[
+                "createdAt"
+            ] = (
+                response[
+                    "createdAt"
+                ].isoformat()
+            )
 
-        except Exception as e:
+            response[
+                "updatedAt"
+            ] = (
+                response[
+                    "updatedAt"
+                ].isoformat()
+            )
+
+            return (
+                response,
+                None
+            )
+
+        except Exception as error:
 
             print(
                 "ROADMAP GENERATION ERROR:",
-                e
+                error
             )
 
-            return None, str(e)
+            return (
+                None,
+                str(error)
+            )
 
     # =========================================================
     # GET ROADMAP
     # =========================================================
 
     @staticmethod
-    def get(user_id):
+    def get(
+        user_id
+    ):
 
         try:
 
-            db = get_db()
-
-            roadmap = db["roadmaps"].find_one({
-                "userId": ObjectId(user_id)
-            })
+            roadmap = (
+                RoadmapModel
+                .get_by_user(
+                    user_id
+                )
+            )
 
             if not roadmap:
                 return None
 
-            roadmap["_id"] = str(
-                roadmap["_id"]
+            roadmap[
+                "_id"
+            ] = str(
+                roadmap[
+                    "_id"
+                ]
             )
 
-            roadmap["userId"] = str(
-                roadmap["userId"]
+            roadmap[
+                "userId"
+            ] = str(
+                roadmap[
+                    "userId"
+                ]
             )
+
+            if roadmap.get(
+                "createdAt"
+            ):
+
+                roadmap[
+                    "createdAt"
+                ] = (
+                    roadmap[
+                        "createdAt"
+                    ].isoformat()
+                )
+
+            if roadmap.get(
+                "updatedAt"
+            ):
+
+                roadmap[
+                    "updatedAt"
+                ] = (
+                    roadmap[
+                        "updatedAt"
+                    ].isoformat()
+                )
 
             return roadmap
 
-        except Exception as e:
+        except Exception as error:
 
             print(
                 "ROADMAP GET ERROR:",
-                e
+                error
             )
 
             return None

@@ -11,11 +11,14 @@ class RoadmapController:
 
         user_id = get_jwt_identity()
 
-        roadmap, error = RoadmapService.generate(
-            user_id
+        roadmap, error = (
+            RoadmapService.generate(
+                user_id
+            )
         )
 
         if error:
+
             return jsonify({
                 "success": False,
                 "message": error
@@ -23,8 +26,10 @@ class RoadmapController:
 
         return jsonify({
             "success": True,
-            "message": "Roadmap generated successfully",
-            "roadmap": roadmap
+            "message":
+                "Roadmap generated successfully",
+            "roadmap":
+                roadmap
         }), 200
 
     @staticmethod
@@ -32,17 +37,22 @@ class RoadmapController:
 
         user_id = get_jwt_identity()
 
-        roadmap = RoadmapService.get(
-            user_id
+        roadmap = (
+            RoadmapService.get(
+                user_id
+            )
         )
 
         if not roadmap:
+
             return jsonify({
                 "success": False,
-                "message": "Roadmap not found"
+                "message":
+                    "Roadmap not found"
             }), 404
 
         return jsonify({
             "success": True,
-            "roadmap": roadmap
+            "roadmap":
+                roadmap
         }), 200

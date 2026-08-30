@@ -1,8 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
+
 import {
   getProfile,
   loginUser as loginApi,
+  registerUser as registerApi,
 } from "../services/authService";
+
 import { storage } from "../utils/storage";
 
 const AuthContext = createContext(null);
@@ -36,6 +39,9 @@ export const AuthProvider = ({ children }) => {
 
   const [loading, setLoading] = useState(true);
 
+  // =========================
+  // RESTORE LOGGED-IN USER
+  // =========================
   useEffect(() => {
     const loadUser = async () => {
       const token = storage.getToken();
@@ -73,60 +79,104 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, []);
 
-  const login = async (email, password) => {
-    const response = await loginApi({
-      email,
-      password,
-    });
-
-    const data = response.data;
-
-    console.log("LOGIN RESPONSE:", data);
-
-    if (!data?.success || !data?.token) {
-      throw new Error(data?.message || "Login failed");
-    }
-
-    storage.setToken(data.token);
-
-    let loggedUser = data.user || null;
-
-    /*
-     * Get complete user profile.
-     * This is important because role may be returned
-     * by /users/profile even if login response does not contain it.
-     */
+  // =========================
+  // REGISTER
+  // =========================
+  const register = async (formData) => {
     try {
-      const profileResponse = await getProfile();
+      console.log("REGISTER REQUEST:", formData);
 
-      loggedUser =
-        profileResponse.data?.user ||
-        profileResponse.data?.data ||
-        profileResponse.data ||
-        loggedUser;
+      const response = await registerApi(formData);
+
+      const data = response.data;
+
+      console.log("REGISTER RESPONSE:", data);
+
+      if (!data?.success) {
+        throw new Error(data?.message || "Registration failed");
+      }
+
+      return data;
     } catch (error) {
-      console.warn("PROFILE FETCH ERROR:", error);
+      console.error("REGISTER ERROR:", error);
+      console.error("REGISTER RESPONSE ERROR:", error.response?.data);
+
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Registration failed"
+      );
     }
-
-    const normalizedUser = normalizeUser(loggedUser);
-
-    console.log("LOGIN USER:", normalizedUser);
-    console.log("LOGIN ROLE:", normalizedUser?.role);
-
-    storage.setUser(normalizedUser);
-    setUser(normalizedUser);
-
-    return {
-      ...data,
-      user: normalizedUser,
-    };
   };
 
+  // =========================
+  // LOGIN
+  // =========================
+  const login = async (email, password) => {
+    try {
+      const response = await loginApi({
+        email,
+        password,
+      });
+
+      const data = response.data;
+
+      console.log("LOGIN RESPONSE:", data);
+
+      if (!data?.success || !data?.token) {
+        throw new Error(data?.message || "Login failed");
+      }
+
+      storage.setToken(data.token);
+
+      let loggedUser = data.user || null;
+
+      try {
+        const profileResponse = await getProfile();
+
+        loggedUser =
+          profileResponse.data?.user ||
+          profileResponse.data?.data ||
+          profileResponse.data ||
+          loggedUser;
+      } catch (error) {
+        console.warn("PROFILE FETCH ERROR:", error);
+      }
+
+      const normalizedUser = normalizeUser(loggedUser);
+
+      console.log("LOGIN USER:", normalizedUser);
+      console.log("LOGIN ROLE:", normalizedUser?.role);
+
+      storage.setUser(normalizedUser);
+      setUser(normalizedUser);
+
+      return {
+        ...data,
+        user: normalizedUser,
+      };
+    } catch (error) {
+      console.error("LOGIN ERROR:", error);
+
+      throw new Error(
+        error.response?.data?.message ||
+          error.message ||
+          "Login failed"
+      );
+    }
+  };
+
+  // =========================
+  // LOGOUT
+  // =========================
   const logout = () => {
     storage.clear();
     setUser(null);
   };
 
+  // =========================
+  // REFRESH USER
+  // =========================
   const refreshUser = async () => {
     try {
       const response = await getProfile();
@@ -157,6 +207,7 @@ export const AuthProvider = ({ children }) => {
         role,
         loading,
         login,
+        register,
         logout,
         refreshUser,
         isAuthenticated: !!storage.getToken(),

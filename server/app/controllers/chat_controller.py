@@ -1,61 +1,111 @@
-from flask import request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import (
+    request,
+    jsonify
+)
 
-from app.models.chat_model import ChatModel
-from app.ai.llm.llm_client import generate_response
-from app.ai.llm.prompts import chat_prompt
+from flask_jwt_extended import (
+    get_jwt_identity
+)
+
+from app.services.chat_service import (
+    ChatService
+)
 
 
 class ChatController:
 
     @staticmethod
-    @jwt_required()
     def send_message():
 
-        data = request.get_json() or {}
+        user_id = (
+            get_jwt_identity()
+        )
 
-        message = data.get("message", "").strip()
+        data = (
+            request.get_json()
+            or {}
+        )
+
+        message = str(
+            data.get(
+                "message",
+                ""
+            )
+        ).strip()
 
         if not message:
+
             return jsonify({
                 "success": False,
                 "message": "Message is required"
             }), 400
 
-        # Get real logged-in user from JWT
-        user_id = get_jwt_identity()
+        if len(message) > 3000:
 
-        prompt = chat_prompt(message)
-        response = generate_response(prompt)
+            return jsonify({
+                "success": False,
+                "message": "Message is too long"
+            }), 400
 
-        chat = ChatModel.create(
-            user_id,
-            message,
-            response
+        chat, error = (
+            ChatService
+            .send_message(
+                user_id,
+                message
+            )
+        )
+
+        if error:
+
+            return jsonify({
+                "success": False,
+                "message": error
+            }), 500
+
+        return jsonify({
+            "success": True,
+            "message": "AI mentor response generated",
+            "chat": chat
+        }), 201
+
+    @staticmethod
+    def get_history():
+
+        user_id = (
+            get_jwt_identity()
+        )
+
+        chats = (
+            ChatService
+            .get_history(
+                user_id
+            )
         )
 
         return jsonify({
             "success": True,
-            "chat": {
-                "userId": chat["userId"],
-                "message": chat["message"],
-                "response": chat["response"],
-                "createdAt": chat["createdAt"]
-            }
-        }), 201
-
+            "count": len(
+                chats
+            ),
+            "chats": chats
+        }), 200
 
     @staticmethod
-    @jwt_required()
-    def get_history():
+    def clear_history():
 
-        # Get real logged-in user from JWT
-        user_id = get_jwt_identity()
+        user_id = (
+            get_jwt_identity()
+        )
 
-        chats = ChatModel.get_by_user(user_id)
+        deleted_count = (
+            ChatService
+            .clear_history(
+                user_id
+            )
+        )
 
         return jsonify({
             "success": True,
-            "count": len(chats),
-            "chats": chats
+            "message": "Chat history cleared",
+            "deletedCount": deleted_count
         }), 200

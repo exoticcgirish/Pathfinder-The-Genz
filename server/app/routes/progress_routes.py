@@ -1,51 +1,79 @@
-from flask import Blueprint, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.config.database import get_db
-from bson import ObjectId
+from flask import Blueprint
 
-progress_bp = Blueprint("progress", __name__)
+from flask_jwt_extended import (
+    jwt_required
+)
+
+from app.controllers.progress_controller import (
+    ProgressController
+)
 
 
-@progress_bp.route("/start/<course_id>", methods=["POST"])
+progress_bp = Blueprint(
+    "progress",
+    __name__
+)
+
+
+@progress_bp.route(
+    "/start/<course_id>",
+    methods=["POST"]
+)
 @jwt_required()
-def start_course(course_id):
+def start_course(
+    course_id
+):
 
-    db = get_db()
+    return (
+        ProgressController
+        .start_course(
+            course_id
+        )
+    )
 
-    user_id = get_jwt_identity()
 
-    existing = db.progress.find_one({
-        "user_id": user_id,
-        "course_id": course_id
-    })
+@progress_bp.route(
+    "",
+    methods=["GET"]
+)
+@jwt_required()
+def get_progress():
 
-    if existing:
-        return jsonify({
-            "success": True,
-            "message": "Course already started",
-            "progress": {
-                "course_id": course_id,
-                "percentage": existing.get("percentage", 0)
-            }
-        })
+    return (
+        ProgressController
+        .get_progress()
+    )
 
-    progress = {
-        "user_id": user_id,
-        "course_id": course_id,
-        "percentage": 0,
-        "completed_topics": [],
-        "status": "in_progress"
-    }
 
-    result = db.progress.insert_one(progress)
+@progress_bp.route(
+    "/<progress_id>",
+    methods=["PUT"]
+)
+@jwt_required()
+def update_progress(
+    progress_id
+):
 
-    return jsonify({
-        "success": True,
-        "message": "Course started",
-        "progress": {
-            "id": str(result.inserted_id),
-            "course_id": course_id,
-            "percentage": 0,
-            "status": "in_progress"
-        }
-    }), 201
+    return (
+        ProgressController
+        .update_progress(
+            progress_id
+        )
+    )
+
+
+@progress_bp.route(
+    "/phase/<int:phase_number>/complete",
+    methods=["POST"]
+)
+@jwt_required()
+def complete_phase(
+    phase_number
+):
+
+    return (
+        ProgressController
+        .complete_phase(
+            phase_number
+        )
+    )
