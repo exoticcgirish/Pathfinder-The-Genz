@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../../context/AuthContext";
 
 const Login = () => {
@@ -19,6 +21,8 @@ const Login = () => {
       ...previous,
       [e.target.name]: e.target.value,
     }));
+
+    setError("");
   };
 
   const redirectByRole = (user) => {
@@ -43,7 +47,7 @@ const Login = () => {
       default:
         console.warn("Unknown role:", role);
 
-        
+        toast.error("Unknown user role. Redirecting to dashboard.");
         navigate("/dashboard", { replace: true });
         break;
     }
@@ -55,7 +59,7 @@ const Login = () => {
     setError("");
 
     if (!form.email || !form.password) {
-      setError("Please enter your email and password.");
+      toast.error("Please enter your email and password.");
       return;
     }
 
@@ -73,22 +77,29 @@ const Login = () => {
       console.log("LOGIN ROLE:", loggedUser?.role);
 
       if (!loggedUser?.role) {
-        setError(
-          "Login successful, but user role was not found. Please check the user's role in the database."
-        );
+        const message =
+          "Login successful, but user role was not found.";
+
+        setError(message);
+        toast.error(message);
+
         return;
       }
+
+      toast.success("Login successful! Welcome back.");
 
       redirectByRole(loggedUser);
     } catch (error) {
       console.error("LOGIN ERROR:", error);
 
-      setError(
+      const message =
         error.response?.data?.message ||
-          error.response?.data?.error ||
-          error.message ||
-          "Invalid email or password."
-      );
+        error.response?.data?.error ||
+        error.message ||
+        "Invalid email or password.";
+
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -96,6 +107,17 @@ const Login = () => {
 
   return (
     <div className="auth-background min-h-screen flex items-center justify-center px-4 py-10">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+      />
+
       <div className="w-full max-w-md">
 
         <div className="mb-8 text-center">
