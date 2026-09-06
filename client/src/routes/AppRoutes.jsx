@@ -1,11 +1,8 @@
-import {
-  Navigate,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import Login from "../views/auth/Login";
 import Register from "../views/auth/Register";
+import LandingPage from "../views/LandingPage";
 
 import Dashboard from "../views/dashboard/Dashboard";
 import AdminDashboard from "../views/dashboard/AdminDashboard";
@@ -25,51 +22,31 @@ import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
 import LearnerLayout from "../components/layout/LearnerLayout";
 
-
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Public Landing Page */}
+      <Route path="/" element={<LandingPage />} />
 
-      <Route
-        path="/"
-        element={
-          <Navigate
-            to="/dashboard"
-            replace
-          />
-        }
-      />
+      {/* Authentication */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
-      <Route
-        path="/login"
-        element={<Login />}
-      />
-
-      <Route
-        path="/register"
-        element={<Register />}
-      />
-
+      {/* Admin */}
       <Route
         path="/admin"
         element={
-          <RoleRoute
-            allowedRoles={["admin"]}
-          >
+          <RoleRoute allowedRoles={["admin"]}>
             <AdminDashboard />
           </RoleRoute>
         }
       />
 
+      {/* Content Manager */}
       <Route
         path="/content-manager"
         element={
-          <RoleRoute
-            allowedRoles={[
-              "content_manager",
-              "admin",
-            ]}
-          >
+          <RoleRoute allowedRoles={["content_manager", "admin"]}>
             <ContentManagerDashboard />
           </RoleRoute>
         }
@@ -78,73 +55,35 @@ const AppRoutes = () => {
       <Route
         path="/content-manager/courses/add"
         element={
-          <RoleRoute
-            allowedRoles={[
-              "content_manager",
-              "admin",
-            ]}
-          >
+          <RoleRoute allowedRoles={["content_manager", "admin"]}>
             <AddCourse />
           </RoleRoute>
         }
       />
 
+      {/* Protected Learner Routes */}
       <Route element={<ProtectedRoute />}>
         <Route element={<LearnerLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
 
-          <Route
-            path="/dashboard"
-            element={<Dashboard />}
-          />
+          <Route path="/courses" element={<Courses />} />
 
-          <Route
-            path="/courses"
-            element={<Courses />}
-          />
+          <Route path="/courses/:id" element={<CourseDetails />} />
 
-          <Route
-            path="/courses/:id"
-            element={<CourseDetails />}
-          />
+          <Route path="/roadmap" element={<Roadmap />} />
 
-          <Route
-            path="/roadmap"
-            element={<Roadmap />}
-          />
+          <Route path="/progress" element={<Progress />} />
 
-          <Route
-            path="/progress"
-            element={<Progress />}
-          />
+          <Route path="/chat" element={<Chat />} />
 
-          <Route
-            path="/chat"
-            element={<Chat />}
-          />
+          <Route path="/profile" element={<Profile />} />
 
-          <Route
-            path="/profile"
-            element={<Profile />}
-          />
-
-          <Route
-            path="/settings"
-            element={<Settings />}
-          />
-
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>
 
-      <Route
-        path="*"
-        element={
-          <Navigate
-            to="/dashboard"
-            replace
-          />
-        }
-      />
-
+      {/* Unknown Routes */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };

@@ -22,7 +22,7 @@ def create_app():
         resources={
             r"/api/*": {
                 "origins": [
-                    "http://localhost:5173"
+                    "http://localhost:5173","https://pathfinder-genz.vercel.app"
                 ]
             }
         },
